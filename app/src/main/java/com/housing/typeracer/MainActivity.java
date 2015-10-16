@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -69,9 +70,18 @@ public class MainActivity extends AppCompatActivity implements
     private void initToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar_main);
         toolbar.setNavigationIcon(R.drawable.default_nav_icon_back);
+        toolbar.setTitleTextAppearance(this, R.style.toolBarTitleStyle);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        if (menuItem.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(menuItem);
+    }
 
     private void initLaunchFragment() {
         replaceFragmentInDefaultLayout(LaunchFragment.newInstance());
@@ -298,4 +308,10 @@ public class MainActivity extends AppCompatActivity implements
             finish();
         }
     }
+
+    public void setToolbarTitle(String title) {
+        toolbar.setTitle(title);
+    }
+
+
 }
