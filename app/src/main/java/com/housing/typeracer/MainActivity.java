@@ -26,11 +26,16 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initViews();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Nearby.CONNECTIONS_API)
                 .build();
+    }
+
+    private void initViews() {
+        findViewById(R.id.host_game_button).setOnClickListener(this);
     }
 
     @Override
@@ -85,7 +90,11 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onClick(View v) {
-
+        switch (v.getId()) {
+            case R.id.host_game_button:
+                ConnectionUtils.startAdvertising(mGoogleApiClient, MainActivity.this);
+                break;
+        }
     }
 
     @Override

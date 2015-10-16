@@ -8,13 +8,16 @@ import android.widget.Toast;
  * Created by gayathri_nair on 16/10/15.
  */
 public class MainApplication extends Application {
-    private static Context context;
+    private static MainApplication context;
     public static boolean mIsHost = false;
+
+    public MainApplication() {
+        context = this;
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        context = this;
     }
 
 
