@@ -41,6 +41,7 @@ public class ChooseHostFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        ((MainActivity) getActivityReference()).setToolbarTitle("Join a game");
         ((MainActivity) getActivityReference()).startDiscovery();
     }
 

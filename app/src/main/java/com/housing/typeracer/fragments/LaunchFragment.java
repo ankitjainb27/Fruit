@@ -29,6 +29,12 @@ public class LaunchFragment extends BaseFragment implements View.OnClickListener
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        ((MainActivity) getActivityReference()).setToolbarTitle("Type Rush");
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.host_game_button:
