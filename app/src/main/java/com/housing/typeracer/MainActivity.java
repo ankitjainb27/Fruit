@@ -19,6 +19,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.connection.Connections;
 import com.housing.typeracer.fragments.BaseFragment;
+import com.housing.typeracer.fragments.ChooseHostFragment;
 import com.housing.typeracer.fragments.LaunchFragment;
 
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements
     private FrameLayout frameLayout;
     private FragmentTransaction fragmentTransaction;
     private Toolbar toolbar;
+    private int playersCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,13 +103,14 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onConnectionRequest(final String remoteEndpointId, final String remoteDeviceId, final String remoteEndpointName, byte[] payload) {
-        if (mIsHost) {
+        if (mIsHost && playersCount < Constants.TOTAL_PLAYERS) {
             Nearby.Connections.acceptConnectionRequest(mGoogleApiClient, remoteEndpointId, payload, this).setResultCallback(new ResultCallback<Status>() {
                 @Override
                 public void onResult(Status status) {
                     if (status.isSuccess()) {
                         if (!mRemotePeerEndpoints.contains(remoteEndpointId)) {
                             mRemotePeerEndpoints.add(remoteEndpointId);
+                            playersCount++;
                         }
 
                         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -124,6 +127,12 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onEndpointFound(String endpointId, String deviceId, final String serviceId, String endpointName) {
         MainApplication.showToast("endpoint found callback called");
+
+        BaseFragment baseFragment = (BaseFragment) getSupportFragmentManager().findFragmentById(R.id.mainFrameLayout);
+        if (baseFragment instanceof ChooseHostFragment) {
+            ((ChooseHostFragment) baseFragment).newHostFount(endpointId, deviceId, serviceId, endpointName);
+        }
+
         byte[] payload = null;
 
         Nearby.Connections.sendConnectionRequest(mGoogleApiClient, deviceId,
