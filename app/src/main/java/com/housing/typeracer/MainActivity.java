@@ -1,10 +1,15 @@
 package com.housing.typeracer;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -12,6 +17,8 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.connection.Connections;
+import com.housing.typeracer.fragments.BaseFragment;
+import com.housing.typeracer.fragments.LaunchFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements
         View.OnClickListener,
         Connections.ConnectionRequestListener,
         Connections.MessageListener,
-        Connections.EndpointDiscoveryListener {
+        Connections.EndpointDiscoveryListener, Controller {
 
     // Identify if the device is the host
     private boolean mIsHost = false;
@@ -31,23 +38,37 @@ public class MainActivity extends AppCompatActivity implements
     private boolean mIsConnected;
     private String mRemoteHostEndpoint;
     private List<String> mRemotePeerEndpoints = new ArrayList<String>();
+    private FrameLayout frameLayout;
+    private FragmentTransaction fragmentTransaction;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initViews();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Nearby.CONNECTIONS_API)
                 .build();
 
+        initViews();
+
     }
 
     private void initViews() {
-        findViewById(R.id.host_game_button).setOnClickListener(this);
-        findViewById(R.id.discover_game_button).setOnClickListener(this);
+        frameLayout = (FrameLayout) findViewById(R.id.mainFrameLayout);
+        initToolbar();
+        initLaunchFragment();
+    }
+
+    private void initToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar_main);
+        setSupportActionBar(toolbar);
+    }
+
+    private void initLaunchFragment() {
+        replaceFragmentInDefaultLayout(LaunchFragment.newInstance());
     }
 
     @Override
@@ -77,13 +98,13 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onConnectionRequest(final String remoteEndpointId, final String remoteDeviceId, final String remoteEndpointName, byte[] payload) {
-        if( mIsHost ) {
-            Nearby.Connections.acceptConnectionRequest(mGoogleApiClient, remoteEndpointId, payload, this ).setResultCallback(new ResultCallback<Status>() {
+        if (mIsHost) {
+            Nearby.Connections.acceptConnectionRequest(mGoogleApiClient, remoteEndpointId, payload, this).setResultCallback(new ResultCallback<Status>() {
                 @Override
                 public void onResult(Status status) {
-                    if( status.isSuccess() ) {
-                        if( !mRemotePeerEndpoints.contains( remoteEndpointId ) ) {
-                            mRemotePeerEndpoints.add( remoteEndpointId );
+                    if (status.isSuccess()) {
+                        if (!mRemotePeerEndpoints.contains(remoteEndpointId)) {
+                            mRemotePeerEndpoints.add(remoteEndpointId);
                         }
 
                         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -93,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
             });
         } else {
-            Nearby.Connections.rejectConnectionRequest(mGoogleApiClient, remoteEndpointId );
+            Nearby.Connections.rejectConnectionRequest(mGoogleApiClient, remoteEndpointId);
         }
     }
 
@@ -141,23 +162,11 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.host_game_button:
-                ConnectionUtils.startAdvertising(mGoogleApiClient, MainActivity.this);
-                break;
-            case R.id.discover_game_button:
-                startDiscovery();
-                break;
-        }
-    }
-
-    @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
 
-    private void startDiscovery() {
+    public void startDiscovery() {
         if (!ConnectionUtils.isConnectedToNetwork()) {
             MainApplication.showToast(R.string.not_connected_to_network);
             return;
@@ -183,5 +192,62 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     }
                 });
+    }
+
+    public void replaceFragmentInDefaultLayout(BaseFragment fragmentToBeLoaded) {
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.mainFrameLayout, fragmentToBeLoaded,
+                fragmentToBeLoaded.getName());
+        fragmentTransaction.addToBackStack(fragmentToBeLoaded.getName());
+        fragmentTransaction.commit();
+
+    }
+
+    @Override
+    public void performOperation(int operation, Object input) {
+        switch (operation) {
+            case OPEN_LAUNCH_FRAGMENT:
+                replaceFragmentInDefaultLayout(LaunchFragment.newInstance());
+                break;
+        }
+    }
+
+    @Override
+    public Fragment getCurrentFragment() {
+        return null;
+    }
+
+    @Override
+    public Fragment getTopFragmentInBackStack() {
+        return null;
+    }
+
+    @Override
+    public ViewGroup getFragmentContainer() {
+        return null;
+    }
+
+    @Override
+    public void popBackStackIfForeground() {
+
+    }
+
+    @Override
+    public void popBackStack() {
+
+    }
+
+    @Override
+    public void clearBackStack(boolean isInclusive) {
+
+    }
+
+    @Override
+    public void onClick(View v) {
+
+    }
+
+    public void startAdvertising() {
+        ConnectionUtils.startAdvertising(mGoogleApiClient, MainActivity.this);
     }
 }
