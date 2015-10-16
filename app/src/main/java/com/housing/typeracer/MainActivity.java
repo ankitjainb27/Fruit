@@ -1,5 +1,6 @@
 package com.housing.typeracer;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -327,6 +328,10 @@ public class MainActivity extends AppCompatActivity implements
 
     public void setToolbarTitle(String title) {
         toolbar.setTitle(title);
+    }
+
+    public void openWifiSettings() {
+        startActivity(new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS));
     }
 
 
