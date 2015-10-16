@@ -5,4 +5,5 @@ package com.housing.typeracer;
  */
 public class Constants {
     public final static int TOTAL_PLAYERS = 5;
+    public final static String USER_NAME = "user_name";
 }

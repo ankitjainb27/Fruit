@@ -9,12 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.nearby.Nearby;
+import com.housing.typeracer.Constants;
 import com.housing.typeracer.MainActivity;
 import com.housing.typeracer.MainApplication;
 import com.housing.typeracer.R;
+import com.housing.typeracer.Serializer;
 import com.housing.typeracer.adapters.ChooseClientRecyclerAdapter;
 import com.housing.typeracer.models.Client;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +33,7 @@ public class ChooseClientFragment extends BaseFragment implements View.OnClickLi
     private List<Client> myDataset;
     private ChooseClientRecyclerAdapter mAdapter;
     private Button startGameButton;
+    private GoogleApiClient googleApiClient;
 
     public static ChooseClientFragment newInstance() {
         return new ChooseClientFragment();
@@ -37,6 +43,7 @@ public class ChooseClientFragment extends BaseFragment implements View.OnClickLi
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         myDataset = new ArrayList<>();
+        googleApiClient = ((MainActivity) getActivityReference()).mGoogleApiClient;
     }
 
     @Nullable
@@ -61,14 +68,36 @@ public class ChooseClientFragment extends BaseFragment implements View.OnClickLi
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivityReference()));
         mAdapter = new ChooseClientRecyclerAdapter(myDataset);
         mRecyclerView.setAdapter(mAdapter);
+        addToGameUsers(Nearby.Connections.getLocalDeviceId(googleApiClient), MainApplication.getSharedPreferences().getString(Constants.USER_NAME, "host"));
     }
 
     public void newClientFound(String remoteEndpointId, String remoteDeviceId, String remoteEndpointName, byte[] payload) {
         myDataset.add(new Client(remoteEndpointId, remoteDeviceId, remoteEndpointName, payload));
         mAdapter.notifyDataSetChanged();
+        addToGameUsers(remoteDeviceId, remoteEndpointName);
+        try {
+            byte[] fileByteArray = Serializer.serialize(MainApplication.USER_NAME);
+            Nearby.Connections.sendReliableMessage(googleApiClient, remoteEndpointId, fileByteArray);
+            MainApplication.showToast(remoteEndpointId);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         if (myDataset.size() > 0) {
             startGameButton.setEnabled(true);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (null != ((MainActivity) getActivityReference()).mGoogleApiClient && ((MainActivity) getActivityReference()).mGoogleApiClient.isConnected()) {
+            Nearby.Connections.stopAdvertising(((MainActivity) getActivityReference()).mGoogleApiClient);
+        }
+    }
+
+    private void addToGameUsers(String deviceId, String name) {
+        MainApplication.USER_NAME.put(deviceId, name);
+        MainApplication.USER_SCORE.put(deviceId, 0);
     }
 
     @Override

@@ -6,6 +6,9 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by gayathri_nair on 16/10/15.
  */
@@ -15,11 +18,21 @@ public class MainApplication extends Application {
 
     private static SharedPreferences sharedPreferences;
 
+
+    public static Map<String, String> USER_NAME;
+    public static Map<String, Integer> USER_SCORE;
+
     @Override
     public void onCreate() {
         super.onCreate();
         context = this;
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        resetGameUsers();
+    }
+
+    public static void resetGameUsers() {
+        USER_NAME = new HashMap<>();
+        USER_SCORE = new HashMap<>();
     }
 
 

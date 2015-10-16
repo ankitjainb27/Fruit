@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.google.android.gms.nearby.Nearby;
 import com.housing.typeracer.Controller;
 import com.housing.typeracer.MainActivity;
+import com.housing.typeracer.MainApplication;
 import com.housing.typeracer.R;
 
 /**
@@ -23,8 +24,11 @@ public class LaunchFragment extends BaseFragment implements View.OnClickListener
     @Override
     public void onResume() {
         super.onResume();
-        Nearby.Connections.stopAdvertising(((MainActivity) getActivityReference()).mGoogleApiClient);
-        Nearby.Connections.disconnectFromEndpoint(((MainActivity) getActivityReference()).mGoogleApiClient, "Back pressed");
+        if (null != ((MainActivity) getActivityReference()).mGoogleApiClient && ((MainActivity) getActivityReference()).mGoogleApiClient.isConnected()) {
+            Nearby.Connections.stopAdvertising(((MainActivity) getActivityReference()).mGoogleApiClient);
+            Nearby.Connections.disconnectFromEndpoint(((MainActivity) getActivityReference()).mGoogleApiClient, "Back pressed");
+        }
+        MainApplication.resetGameUsers();
     }
 
     @Nullable
