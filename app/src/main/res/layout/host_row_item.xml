@@ -21,8 +21,7 @@
         android:layout_toLeftOf="@+id/imageView"
         android:layout_toRightOf="@id/text_drawable"
         android:layout_toStartOf="@+id/imageView"
-        android:gravity="center"
-        android:text="hello" />
+        android:gravity="center" />
 
     <ImageView
         android:id="@+id/imageView"

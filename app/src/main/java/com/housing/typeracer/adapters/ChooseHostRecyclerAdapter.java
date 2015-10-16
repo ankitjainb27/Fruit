@@ -49,7 +49,7 @@ public class ChooseHostRecyclerAdapter extends RecyclerView.Adapter<ChooseHostRe
         return dataSet.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView hostName;
         ImageView textDrawable;
@@ -58,6 +58,11 @@ public class ChooseHostRecyclerAdapter extends RecyclerView.Adapter<ChooseHostRe
             super(itemView);
             hostName = (TextView) itemView.findViewById(R.id.host_name);
             textDrawable = (ImageView) itemView.findViewById(R.id.text_drawable);
+        }
+
+        @Override
+        public void onClick(View v) {
+
         }
     }
 }
