@@ -3,6 +3,7 @@ package com.housing.typeracer;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -288,5 +289,13 @@ public class MainActivity extends AppCompatActivity implements
         ConnectionUtils.startAdvertising(mGoogleApiClient, MainActivity.this);
     }
 
-
+    @Override
+    public void onBackPressed() {
+        FragmentManager manager = getSupportFragmentManager();
+        if (manager.getBackStackEntryCount() > 1) {
+            manager.popBackStack();
+        } else {
+            finish();
+        }
+    }
 }
