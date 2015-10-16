@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements
                 .addOnConnectionFailedListener(this)
                 .addApi(Nearby.CONNECTIONS_API)
                 .build();
+
     }
 
     @Override
@@ -64,7 +65,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onEndpointFound(String s, String s1, String s2, String s3) {
+    public void onEndpointFound(final String endpointId, String deviceId,
+                                String serviceId, final String endpointName) {
 
     }
 
