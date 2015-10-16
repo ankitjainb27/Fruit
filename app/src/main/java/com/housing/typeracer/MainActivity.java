@@ -193,12 +193,21 @@ public class MainActivity extends AppCompatActivity implements
     public void onMessageReceived(String endpointId, byte[] payload, boolean isReliable) {
         if (isReliable && !MainApplication.mIsHost) {
             try {
-                Map<String, String> userName = (HashMap<String, String>) Serializer.deserialize(payload);
-                MainApplication.USER_NAME.putAll(userName);
-                for (String key : userName.keySet()) {
-                    MainApplication.USER_SCORE.put(key, 0);
-                    MainApplication.showToast("RELIABLE DATA : " + key);
+                Object obj = Serializer.deserialize(payload);
+                if (obj instanceof HashMap) {
+                    Map<String, String> userName = (HashMap<String, String>) obj;
+                    MainApplication.USER_NAME.putAll(userName);
+                    for (String key : userName.keySet()) {
+                        MainApplication.USER_SCORE.put(key, 0);
+                        MainApplication.showToast("RELIABLE DATA : " + key);
+                    }
+                } else if (obj instanceof String) {
+                    String data = (String) obj;
+                    if (data.equalsIgnoreCase(Constants.START_GAME)) {
+                        openGameScreen();
+                    }
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -329,5 +338,8 @@ public class MainActivity extends AppCompatActivity implements
         toolbar.setTitle(title);
     }
 
+    public void openGameScreen() {
+
+    }
 
 }

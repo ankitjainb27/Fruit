@@ -18,8 +18,8 @@ public class MainApplication extends Application {
 
     private static SharedPreferences sharedPreferences;
 
-
     public static Map<String, String> USER_NAME;
+    public static Map<String, String> USER_REMOTE_ENDPOINT;
     public static Map<String, Integer> USER_SCORE;
 
     @Override
@@ -32,6 +32,7 @@ public class MainApplication extends Application {
 
     public static void resetGameUsers() {
         USER_NAME = new HashMap<>();
+        USER_REMOTE_ENDPOINT = new HashMap<>();
         USER_SCORE = new HashMap<>();
     }
 
