@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements
         Connections.EndpointDiscoveryListener, Controller {
 
     // Identify if the device is the host
-    public boolean mIsHost = false;
+//    public boolean mIsHost = false;
     public GoogleApiClient mGoogleApiClient;
     public boolean mIsConnected;
     public String mRemoteHostEndpoint;
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onConnectionRequest(final String remoteEndpointId, final String remoteDeviceId, final String remoteEndpointName, byte[] payload) {
-        if (mIsHost && playersCount < Constants.TOTAL_PLAYERS) {
+        if (MainApplication.mIsHost && playersCount < Constants.TOTAL_PLAYERS) {
             Nearby.Connections.acceptConnectionRequest(mGoogleApiClient, remoteEndpointId, payload, this).setResultCallback(new ResultCallback<Status>() {
                 @Override
                 public void onResult(Status status) {
@@ -155,12 +155,12 @@ public class MainActivity extends AppCompatActivity implements
                             Nearby.Connections.stopDiscovery(mGoogleApiClient, serviceId);
                             mRemoteHostEndpoint = endpointId;
 
-                            if (!mIsHost) {
+                            if (!MainApplication.mIsHost) {
                                 mIsConnected = true;
                             }
                         } else {
                             MainApplication.showToast("Connection to " + endpointId + " failed");
-                            if (!mIsHost) {
+                            if (!MainApplication.mIsHost) {
                                 mIsConnected = false;
                             }
                         }
