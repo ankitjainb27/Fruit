@@ -12,13 +12,12 @@
         android:id="@+id/tvPara"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="albatross hangs motionless upon the air and deep beneath the rolling waves, in labyrinths of coral caves - the echo of a distant tide comes willowing across the sand, and everything is green and submarine. " />
+        android:text="albatross hangs motionless upon the air and deep beneath the rolling waves, in labyrinths of coral caves - the echo of a distant tide comes willowing across the sand, and everything is green and submarine." />
 
     <EditText
         android:id="@+id/etInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvPara"
-        android:textColor="@android:color/black"
-        android:inputType="textNoSuggestions" />
+        android:textColor="@android:color/black" />
 </RelativeLayout>

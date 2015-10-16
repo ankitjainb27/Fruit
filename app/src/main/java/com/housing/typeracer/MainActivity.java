@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity implements TextWatcher {
     int counterText = 0;
     int counterInput = 0;
     int flag = 0;
+    int mistake;
     SpannableString styledString;
 
 
@@ -34,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements TextWatcher {
         text = para.getText().toString();
         styledString
                 = new SpannableString(text);
+        styledString.setSpan(new ForegroundColorSpan(Color.BLUE), beforeIndex(counterText), afterIndex(counterText), 0);
+        para.setText(styledString);
 
 
     }
@@ -62,14 +65,14 @@ public class MainActivity extends AppCompatActivity implements TextWatcher {
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        Log.i("ankit_before_start", String.valueOf(start));
+ /*       Log.i("ankit_before_start", String.valueOf(start));
         Log.i("ankit_before_count", String.valueOf(count));
         Log.i("ankit_before_after", String.valueOf(count));
         if (start == 0 && count == 1) {
             counterText--;
             input.setBackgroundColor(Color.WHITE);
         }
-
+*/
      /*   if (start < count) {
              *//*   Log.i("ankitbefore", String.valueOf(before));
                 Log.i("ankitcount", String.valueOf(count));
@@ -89,7 +92,41 @@ public class MainActivity extends AppCompatActivity implements TextWatcher {
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
+
         Log.i("ankit_ON_start", String.valueOf(start));
+        Log.i("ankit_ON_count", String.valueOf(count));
+        Log.i("ankit_ON_before", String.valueOf(before));
+        Log.i("ankit_ON_S", s.toString());
+        Log.i("ankit_ON_counter", String.valueOf(counterText));
+
+        if (count > before) {
+            if (flag == 0) {
+                if (counterText < text.length() - 1) {
+                    if (!(Character.toString(text.charAt(counterText + start))).equals(Character.toString(s.charAt(start)))) {
+                        input.setBackgroundColor(Color.RED);
+                        flag = 1;
+                        mistake = start;
+                    } else {
+                        if ((Character.toString(s.charAt(start))).equals(" ")) {
+                            input.setText("");
+                            counterText = counterText + start + 1;
+                            Log.i("ankit_ON_counter1", String.valueOf(counterText));
+                            styledString.setSpan(new ForegroundColorSpan(Color.BLACK), 0, text.length(), 0);
+                            styledString.setSpan(new ForegroundColorSpan(Color.BLUE), counterText, afterIndex(counterText), 0);
+                            Log.i("ankit_ON_after", String.valueOf(afterIndex(counterText)));
+                            para.setText(styledString);
+                        }
+                    }
+                }
+            }
+        } else if (count < before) {
+            if (start == mistake) {
+                input.setBackgroundColor(Color.WHITE);
+                flag = 0;
+            }
+        }
+
+       /* Log.i("ankit_ON_start", String.valueOf(start));
         Log.i("ankit_ON_count", String.valueOf(count));
         Log.i("ankit_ON_before", String.valueOf(before));
         Log.i("ankit_ON_COUNTER", String.valueOf(counterText));
@@ -118,23 +155,27 @@ public class MainActivity extends AppCompatActivity implements TextWatcher {
                     }
                 }
             }
-      /*      Log.i("ankitbefore", String.valueOf(beforeIndex(counterText)));
+      *//*      Log.i("ankitbefore", String.valueOf(beforeIndex(counterText)));
             Log.i("ankitafter", String.valueOf(afterIndex(counterText)));
-*/
+*//*
             if (before == 1 && count == 0) {
                 input.setBackgroundColor(Color.WHITE);
             }
             Log.i("ankitontext", "came" + counterText);
         }
+   */
+
     }
 
     private int afterIndex(int counterText) {
         int afterIndex = counterText;
-        if (!Character.toString(text.charAt(counterText)).equals(" ")) {
-            for (int i = counterText; i < text.length(); i++) {
-                if (Character.toString(text.charAt(i)).equals(" ")) {
-                    afterIndex = i;
-                    break;
+        if (counterText < text.length() - 1) {
+            if (!Character.toString(text.charAt(counterText)).equals(" ")) {
+                for (int i = counterText; i < text.length(); i++) {
+                    if (Character.toString(text.charAt(i)).equals(" ")) {
+                        afterIndex = i;
+                        break;
+                    }
                 }
             }
         }
