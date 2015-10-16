@@ -7,9 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.google.android.gms.nearby.Nearby;
 import com.housing.typeracer.ConnectionUtils;
 import com.housing.typeracer.Controller;
 import com.housing.typeracer.MainActivity;
+import com.housing.typeracer.MainApplication;
 import com.housing.typeracer.R;
 
 /**
@@ -23,6 +25,7 @@ public class LaunchFragment extends BaseFragment implements View.OnClickListener
     public static LaunchFragment newInstance() {
         return new LaunchFragment();
     }
+
 
     @Nullable
     @Override
@@ -44,12 +47,18 @@ public class LaunchFragment extends BaseFragment implements View.OnClickListener
     @Override
     public void onResume() {
         super.onResume();
+
         ((MainActivity) getActivityReference()).setToolbarTitle("Type Rush");
         if (!ConnectionUtils.isConnectedToNetwork()) {
             noWifiLayout.setVisibility(View.VISIBLE);
         } else {
             noWifiLayout.setVisibility(View.GONE);
         }
+        if (null != ((MainActivity) getActivityReference()).mGoogleApiClient && ((MainActivity) getActivityReference()).mGoogleApiClient.isConnected()) {
+            Nearby.Connections.stopAdvertising(((MainActivity) getActivityReference()).mGoogleApiClient);
+            Nearby.Connections.disconnectFromEndpoint(((MainActivity) getActivityReference()).mGoogleApiClient, "Back pressed");
+        }
+        MainApplication.resetGameUsers();
     }
 
     @Override

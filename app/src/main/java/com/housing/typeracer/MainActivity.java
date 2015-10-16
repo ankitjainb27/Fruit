@@ -27,7 +27,9 @@ import com.housing.typeracer.fragments.ChooseHostFragment;
 import com.housing.typeracer.fragments.LaunchFragment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -58,9 +60,7 @@ public class MainActivity extends AppCompatActivity implements
                 .addOnConnectionFailedListener(this)
                 .addApi(Nearby.CONNECTIONS_API)
                 .build();
-
         initViews();
-
     }
 
     private void initViews() {
@@ -96,14 +96,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.reconnect();
-        }
-    }
-
-    @Override
     public void onStop() {
         super.onStop();
         if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
@@ -119,7 +111,6 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onConnectionSuspended(int i) {
-
     }
 
     @Override
@@ -200,8 +191,19 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onMessageReceived(String s, byte[] bytes, boolean b) {
-
+    public void onMessageReceived(String endpointId, byte[] payload, boolean isReliable) {
+        if (isReliable && !MainApplication.mIsHost) {
+            try {
+                Map<String, String> userName = (HashMap<String, String>) Serializer.deserialize(payload);
+                MainApplication.USER_NAME.putAll(userName);
+                for (String key : userName.keySet()) {
+                    MainApplication.USER_SCORE.put(key, 0);
+                    MainApplication.showToast("RELIABLE DATA : " + key);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -233,9 +235,7 @@ public class MainActivity extends AppCompatActivity implements
                     public void onResult(Status status) {
                         if (status.isSuccess()) {
                         } else {
-                            int statusCode = status.getStatusCode();
                             MainApplication.showToast(R.string.something_went_wrong);
-                            Log.d("startDiscovery", status.getStatusMessage());
                         }
                     }
                 });
