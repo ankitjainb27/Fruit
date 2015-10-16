@@ -35,10 +35,10 @@ public class MainActivity extends AppCompatActivity implements
         Connections.EndpointDiscoveryListener, Controller {
 
     // Identify if the device is the host
-    private boolean mIsHost = false;
-    private GoogleApiClient mGoogleApiClient;
-    private boolean mIsConnected;
-    private String mRemoteHostEndpoint;
+    public boolean mIsHost = false;
+    public GoogleApiClient mGoogleApiClient;
+    public boolean mIsConnected;
+    public String mRemoteHostEndpoint;
     private List<String> mRemotePeerEndpoints = new ArrayList<String>();
     private FrameLayout frameLayout;
     private FragmentTransaction fragmentTransaction;
@@ -132,7 +132,9 @@ public class MainActivity extends AppCompatActivity implements
         if (baseFragment instanceof ChooseHostFragment) {
             ((ChooseHostFragment) baseFragment).newHostFount(endpointId, deviceId, serviceId, endpointName);
         }
+    }
 
+    public void connectToHost(String deviceId, String endpointId, final String serviceId) {
         byte[] payload = null;
 
         Nearby.Connections.sendConnectionRequest(mGoogleApiClient, deviceId,
@@ -221,6 +223,9 @@ public class MainActivity extends AppCompatActivity implements
             case OPEN_LAUNCH_FRAGMENT:
                 replaceFragmentInDefaultLayout(LaunchFragment.newInstance());
                 break;
+            case OPEN_CHOOSE_HOST_FRAGMENT:
+                replaceFragmentInDefaultLayout(ChooseHostFragment.newInstance());
+                break;
         }
     }
 
@@ -274,5 +279,6 @@ public class MainActivity extends AppCompatActivity implements
     public void startAdvertising() {
         ConnectionUtils.startAdvertising(mGoogleApiClient, MainActivity.this);
     }
+
 
 }

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.housing.typeracer.MainActivity;
 import com.housing.typeracer.R;
 import com.housing.typeracer.adapters.ChooseHostRecyclerAdapter;
 import com.housing.typeracer.models.Host;
@@ -18,16 +19,26 @@ import java.util.List;
 /**
  * Created by Rohit Arya (http://rohitarya.com/) on 16/10/15.
  */
-public class ChooseHostFragment extends BaseFragment {
+public class ChooseHostFragment extends BaseFragment{
 
     private RecyclerView mRecyclerView;
     private List<Host> myDataset;
     private ChooseHostRecyclerAdapter mAdapter;
 
+    public static ChooseHostFragment newInstance() {
+        return new ChooseHostFragment();
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         myDataset = new ArrayList<>();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        ((MainActivity) getActivityReference()).startDiscovery();
     }
 
     @Nullable
