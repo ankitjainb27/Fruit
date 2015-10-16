@@ -12,5 +12,6 @@
     <string name="not_connected_to_network">Please connect to a WiFi network first</string>
     <string name="advertising_now">You are advertising now.</string>
     <string name="something_went_wrong">Something went wrong</string>
+    <string name="hosts_found">Host found.</string>
     ...
 </resources>
