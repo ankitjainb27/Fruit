@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Created by Rohit Arya (http://rohitarya.com/) on 16/10/15.
  */
-public class ChooseHostFragment extends BaseFragment{
+public class ChooseHostFragment extends BaseFragment {
 
     private static final String TAG = "ChooseHostFragment";
     private RecyclerView mRecyclerView;
@@ -63,6 +63,8 @@ public class ChooseHostFragment extends BaseFragment{
                     @Override
                     public void onItemClick(View view, int position) {
                         Log.d(TAG, position + "");
+                        Host data = myDataset.get(position);
+                        ((MainActivity) getActivityReference()).connectToHost(data.getDeviceId(), data.getEndpointId(), data.getServiceId());
                     }
                 })
         );

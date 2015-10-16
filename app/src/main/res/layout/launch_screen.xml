@@ -8,13 +8,15 @@
     <Button
         android:id="@+id/host_game_button"
         style="@style/greenButtonStyle"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"
+        android:text="Host a game" />
 
     <Button
         android:id="@+id/discover_game_button"
         style="@style/greenButtonStyle"
         android:layout_above="@id/host_game_button"
-        android:layout_marginBottom="@dimen/padding_medium" />
+        android:layout_marginBottom="@dimen/padding_medium"
+        android:text="Join an existing game" />
 
     <RelativeLayout
         android:layout_width="match_parent"
