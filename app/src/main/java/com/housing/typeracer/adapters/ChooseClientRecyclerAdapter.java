@@ -10,20 +10,20 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.housing.typeracer.R;
-import com.housing.typeracer.models.Host;
+import com.housing.typeracer.models.Client;
 
 import java.util.List;
 
 /**
  * Created by Rohit Arya (http://rohitarya.com/) on 16/10/15.
  */
-public class ChooseHostRecyclerAdapter extends RecyclerView.Adapter<ChooseHostRecyclerAdapter.ViewHolder> {
+public class ChooseClientRecyclerAdapter extends RecyclerView.Adapter<ChooseClientRecyclerAdapter.ViewHolder> {
 
-    private List<Host> dataSet;
+    private List<Client> dataSet;
     ColorGenerator generator;
     TextDrawable.IBuilder builder;
 
-    public ChooseHostRecyclerAdapter(List<Host> dataSet) {
+    public ChooseClientRecyclerAdapter(List<Client> dataSet) {
         this.dataSet = dataSet;
         generator = ColorGenerator.MATERIAL;
         builder = TextDrawable.builder()
@@ -32,14 +32,14 @@ public class ChooseHostRecyclerAdapter extends RecyclerView.Adapter<ChooseHostRe
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.host_row_item, null);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.client_row_item, null);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String name = dataSet.get(position).getEndpointName();
-        holder.hostName.setText(name);
+        String name = dataSet.get(position).getRemoteEndpointName();
+        holder.clientName.setText(name);
         int color = generator.getColor(name);
         holder.textDrawable.setImageDrawable(builder.build(name.substring(0, 1), color));
     }
@@ -50,13 +50,12 @@ public class ChooseHostRecyclerAdapter extends RecyclerView.Adapter<ChooseHostRe
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-
-        TextView hostName;
+        TextView clientName;
         ImageView textDrawable;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            hostName = (TextView) itemView.findViewById(R.id.host_name);
+            clientName = (TextView) itemView.findViewById(R.id.client_name);
             textDrawable = (ImageView) itemView.findViewById(R.id.text_drawable);
         }
     }
