@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import com.housing.typeracer.MainActivity;
 import com.housing.typeracer.R;
 import com.housing.typeracer.adapters.ChooseHostRecyclerAdapter;
+import com.housing.typeracer.listeners.RecyclerItemClickListener;
 import com.housing.typeracer.models.Host;
 
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ import java.util.List;
  */
 public class ChooseHostFragment extends BaseFragment{
 
+    private static final String TAG = "ChooseHostFragment";
     private RecyclerView mRecyclerView;
     private List<Host> myDataset;
     private ChooseHostRecyclerAdapter mAdapter;
@@ -55,6 +58,14 @@ public class ChooseHostFragment extends BaseFragment{
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivityReference()));
         mAdapter = new ChooseHostRecyclerAdapter(myDataset);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(getActivityReference(), new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Log.d(TAG, position + "");
+                    }
+                })
+        );
     }
 
     public void newHostFount(String endpointId, String deviceId, final String serviceId, String endpointName) {
