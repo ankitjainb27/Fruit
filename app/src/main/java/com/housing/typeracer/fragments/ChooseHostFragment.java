@@ -45,6 +45,11 @@ public class ChooseHostFragment extends BaseFragment implements View.OnClickList
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ((MainActivity) getActivityReference()).setToolbarTitle("Join a game");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         ((MainActivity) getActivityReference()).startDiscovery();
     }
 

@@ -58,6 +58,11 @@ public class ChooseClientFragment extends BaseFragment implements View.OnClickLi
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ((MainActivity) getActivityReference()).setToolbarTitle("Host a game");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         ((MainActivity) getActivityReference()).startAdvertising();
     }
 
@@ -90,9 +95,9 @@ public class ChooseClientFragment extends BaseFragment implements View.OnClickLi
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (null != ((MainActivity) getActivityReference()).mGoogleApiClient && ((MainActivity) getActivityReference()).mGoogleApiClient.isConnected()) {
-            Nearby.Connections.stopAdvertising(((MainActivity) getActivityReference()).mGoogleApiClient);
-        }
+//        if (null != ((MainActivity) getActivityReference()).mGoogleApiClient && ((MainActivity) getActivityReference()).mGoogleApiClient.isConnected()) {
+//            Nearby.Connections.stopAdvertising(((MainActivity) getActivityReference()).mGoogleApiClient);
+//        }
     }
 
     private void addToGameUsers(String deviceId, String name) {
