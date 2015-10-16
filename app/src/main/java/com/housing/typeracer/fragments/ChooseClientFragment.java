@@ -71,6 +71,8 @@ public class ChooseClientFragment extends BaseFragment implements View.OnClickLi
         mAdapter = new ChooseClientRecyclerAdapter(myDataset);
         mRecyclerView.setAdapter(mAdapter);
         addToGameUsers(myDeviceId, MainApplication.getSharedPreferences().getString(Constants.USER_NAME, "host"));
+        myDataset.add(new Client(Nearby.Connections.getLocalEndpointId(googleApiClient), myDeviceId, MainApplication.getSharedPreferences().getString(Constants.USER_NAME, "host"), null));
+        mAdapter.notifyDataSetChanged();
     }
 
     public void newClientFound(String remoteEndpointId, String remoteDeviceId, String remoteEndpointName, byte[] payload) {
