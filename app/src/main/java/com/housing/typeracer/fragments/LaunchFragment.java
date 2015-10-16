@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.nearby.Nearby;
 import com.housing.typeracer.Controller;
 import com.housing.typeracer.MainActivity;
 import com.housing.typeracer.R;
@@ -17,6 +18,13 @@ public class LaunchFragment extends BaseFragment implements View.OnClickListener
 
     public static LaunchFragment newInstance() {
         return new LaunchFragment();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Nearby.Connections.stopAdvertising(((MainActivity) getActivityReference()).mGoogleApiClient);
+        Nearby.Connections.disconnectFromEndpoint(((MainActivity) getActivityReference()).mGoogleApiClient, "Back pressed");
     }
 
     @Nullable

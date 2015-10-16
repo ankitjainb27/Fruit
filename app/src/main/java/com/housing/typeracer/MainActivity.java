@@ -57,9 +57,7 @@ public class MainActivity extends AppCompatActivity implements
                 .addOnConnectionFailedListener(this)
                 .addApi(Nearby.CONNECTIONS_API)
                 .build();
-
         initViews();
-
     }
 
     private void initViews() {
@@ -95,14 +93,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.reconnect();
-        }
-    }
-
-    @Override
     public void onStop() {
         super.onStop();
         if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
@@ -118,7 +108,6 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onConnectionSuspended(int i) {
-
     }
 
     @Override
