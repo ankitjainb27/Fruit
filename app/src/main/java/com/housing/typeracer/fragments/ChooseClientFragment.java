@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.housing.typeracer.MainActivity;
 import com.housing.typeracer.MainApplication;
 import com.housing.typeracer.R;
 import com.housing.typeracer.adapters.ChooseClientRecyclerAdapter;
@@ -44,6 +45,13 @@ public class ChooseClientFragment extends BaseFragment implements View.OnClickLi
         View rootView = inflater.inflate(R.layout.choose_client_fragment, container, false);
         initViews(rootView);
         return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        ((MainActivity) getActivityReference()).setToolbarTitle("Host a game");
+        ((MainActivity) getActivityReference()).startAdvertising();
     }
 
     private void initViews(View rootView) {

@@ -162,10 +162,6 @@ public class MainActivity extends AppCompatActivity implements
 
                     @Override
                     public void onConnectionResponse(String endpointId, Status status, byte[] bytes) {
-                        Log.v("hola", "hola on connectionreposnse - endpoint id = " + endpointId);
-                        Log.v("hola", "hola on connectionreposnse - device id = " + deviceId);
-                        Log.v("hola", "hola on connectionreposnse - service id = " + serviceId);
-                        Log.v("hola", "hola on connectionreposnse - status = " + status);
                         if (status.isSuccess()) {
                             MainApplication.showToast("Connected to: " + endpointId);
                             Nearby.Connections.stopDiscovery(mGoogleApiClient, serviceId);
@@ -173,6 +169,10 @@ public class MainActivity extends AppCompatActivity implements
 
                             if (!MainApplication.mIsHost) {
                                 mIsConnected = true;
+                                BaseFragment baseFragment = (BaseFragment) getSupportFragmentManager().findFragmentById(R.id.mainFrameLayout);
+                                if (baseFragment instanceof ChooseHostFragment) {
+                                    ((ChooseHostFragment) baseFragment).connectedToHost(endpointId);
+                                }
                             }
                         } else {
                             Log.d("ERROR", status.getStatusMessage());
@@ -250,6 +250,9 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case OPEN_CHOOSE_HOST_FRAGMENT:
                 replaceFragmentInDefaultLayout(ChooseHostFragment.newInstance());
+                break;
+            case OPEN_CHOOSE_CLIENT_FRAGMENT:
+                replaceFragmentInDefaultLayout(ChooseClientFragment.newInstance());
                 break;
         }
     }

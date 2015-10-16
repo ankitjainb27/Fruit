@@ -38,7 +38,7 @@ public class LaunchFragment extends BaseFragment implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.host_game_button:
-                ((MainActivity) getActivityReference()).startAdvertising();
+                getFragmentController().performOperation(Controller.OPEN_CHOOSE_CLIENT_FRAGMENT, null);
                 break;
             case R.id.discover_game_button:
                 getFragmentController().performOperation(Controller.OPEN_CHOOSE_HOST_FRAGMENT, null);

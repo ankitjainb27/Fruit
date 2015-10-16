@@ -13,4 +13,66 @@
         android:background="@color/white"
         android:scrollbars="vertical" />
 
+    <RelativeLayout
+        android:id="@+id/confirmed_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/padding_medium"
+        android:layout_marginRight="@dimen/padding_medium"
+        android:background="@color/white"
+        android:visibility="gone">
+
+        <com.housing.typeracer.fonts.TextRegular
+            android:id="@+id/hdr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/padding_huge"
+            android:layout_marginRight="@dimen/padding_huge"
+            android:layout_marginTop="@dimen/padding_v_large"
+            android:gravity="center"
+            android:text="Divine space_6 accepted your request"
+            android:textColor="@color/blue_toolbar"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/dismiss_ftr"
+            style="@style/greenButtonStyle"
+            android:layout_alignParentBottom="true"
+            android:text="DISMISS" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/dismiss_ftr"
+            android:layout_below="@id/hdr">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true">
+
+                <ImageView
+                    android:id="@+id/img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/add" />
+
+                <com.housing.typeracer.fonts.TextLight
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/img"
+                    android:layout_marginTop="@dimen/padding_v_large"
+                    android:gravity="center"
+                    android:text="Waiting for others to join in..."
+                    android:textColor="@color/color_676777"
+                    android:textSize="16sp" />
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
 </RelativeLayout>

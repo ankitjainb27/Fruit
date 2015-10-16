@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.housing.typeracer.MainActivity;
 import com.housing.typeracer.R;
@@ -21,12 +23,14 @@ import java.util.List;
 /**
  * Created by Rohit Arya (http://rohitarya.com/) on 16/10/15.
  */
-public class ChooseHostFragment extends BaseFragment {
+public class ChooseHostFragment extends BaseFragment implements View.OnClickListener {
 
     private static final String TAG = "ChooseHostFragment";
     private RecyclerView mRecyclerView;
     private List<Host> myDataset;
     private ChooseHostRecyclerAdapter mAdapter;
+    private RelativeLayout confirmedlayout;
+    private TextView confirmedHdr;
 
     public static ChooseHostFragment newInstance() {
         return new ChooseHostFragment();
@@ -55,6 +59,9 @@ public class ChooseHostFragment extends BaseFragment {
 
     private void initViews(View rootView) {
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
+        confirmedlayout = (RelativeLayout) rootView.findViewById(R.id.confirmed_layout);
+        confirmedHdr = (TextView) rootView.findViewById(R.id.hdr);
+        rootView.findViewById(R.id.dismiss_ftr).setOnClickListener(this);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivityReference()));
         mAdapter = new ChooseHostRecyclerAdapter(myDataset);
@@ -74,5 +81,19 @@ public class ChooseHostFragment extends BaseFragment {
     public void newHostFount(String endpointId, String deviceId, final String serviceId, String endpointName) {
         myDataset.add(new Host(endpointId, deviceId, serviceId, endpointName));
         mAdapter.notifyDataSetChanged();
+    }
+
+    public void connectedToHost(String endpointId) {
+        confirmedlayout.setVisibility(View.VISIBLE);
+        confirmedHdr.setText(endpointId + " accepted your request!");
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.dismiss_ftr:
+                getFragmentController().onBackPressed();
+                break;
+        }
     }
 }

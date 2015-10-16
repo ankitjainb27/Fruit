@@ -8,6 +8,7 @@ public interface Controller {
 
     int OPEN_LAUNCH_FRAGMENT = 101;
     int OPEN_CHOOSE_HOST_FRAGMENT = 102;
+    int OPEN_CHOOSE_CLIENT_FRAGMENT = 103;
 
     void performOperation(final int operation, Object input);
 

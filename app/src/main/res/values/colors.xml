@@ -170,6 +170,7 @@
 
 
     <color name="tealish">#29c5a7</color>
+    <color name="tealish_touch">#48d9bd</color>
     <item name="orange" type="color">#FFFFBB33</item>
     <item name="red" type="color">#FFFF4444</item>
     <item name="darkblue" type="color">#FF0099CC</item>
@@ -178,5 +179,7 @@
     <item name="darkorange" type="color">#FFFF8800</item>
     <item name="darkred" type="color">#FFCC0000</item>
     <color name="blue_toolbar">#27273d</color>
+
+    <color name="color_676777">#676777</color>
 
 </resources> 
