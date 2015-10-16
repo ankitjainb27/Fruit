@@ -228,9 +228,7 @@ public class MainActivity extends AppCompatActivity implements
                     public void onResult(Status status) {
                         if (status.isSuccess()) {
                         } else {
-                            int statusCode = status.getStatusCode();
                             MainApplication.showToast(R.string.something_went_wrong);
-                            Log.d("startDiscovery", status.getStatusMessage());
                         }
                     }
                 });
