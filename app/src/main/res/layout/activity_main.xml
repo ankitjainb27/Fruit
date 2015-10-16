@@ -19,4 +19,11 @@
         android:layout_height="wrap_content"
         android:text="Host a  game" />
 
+    <Button
+        android:id="@+id/discover_game_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/host_game_button"
+        android:text="Discover a  game" />
+
 </RelativeLayout>

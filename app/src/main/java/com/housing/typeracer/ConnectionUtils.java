@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.connection.AppIdentifier;
 import com.google.android.gms.nearby.connection.AppMetadata;
@@ -64,7 +63,6 @@ public class ConnectionUtils {
                 if (result.getStatus().isSuccess()) {
                     MainApplication.showToast(R.string.advertising_now);
                 } else {
-                    int statusCode = result.getStatus().getStatusCode();
                     MainApplication.showToast(R.string.something_went_wrong);
                     Log.d("startDiscovery", result.getStatus().getStatusMessage());
                 }
@@ -72,29 +70,5 @@ public class ConnectionUtils {
         });
     }
 
-    public static void startDiscovery(GoogleApiClient mGoogleApiClient, Connections.EndpointDiscoveryListener listener) {
-        if (!isConnectedToNetwork()) {
-            MainApplication.showToast(R.string.not_connected_to_network);
-            return;
-        }
 
-        String serviceId = MainApplication.getContext().getString(R.string.service_id);
-
-        // Set an appropriate timeout length in milliseconds
-        long DISCOVER_TIMEOUT = 1000L;
-
-        Nearby.Connections.startDiscovery(mGoogleApiClient, serviceId, DISCOVER_TIMEOUT, listener)
-                .setResultCallback(new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
-                        if (status.isSuccess()) {
-                            MainApplication.showToast(R.string.hosts_found);
-                        } else {
-                            int statusCode = status.getStatusCode();
-                            MainApplication.showToast(R.string.something_went_wrong);
-                            Log.d("startDiscovery", status.getStatusMessage());
-                        }
-                    }
-                });
-    }
 }
