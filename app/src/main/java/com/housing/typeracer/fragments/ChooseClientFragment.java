@@ -34,6 +34,7 @@ public class ChooseClientFragment extends BaseFragment implements View.OnClickLi
     private ChooseClientRecyclerAdapter mAdapter;
     private Button startGameButton;
     private GoogleApiClient googleApiClient;
+    private String myDeviceId;
 
     public static ChooseClientFragment newInstance() {
         return new ChooseClientFragment();
@@ -44,6 +45,7 @@ public class ChooseClientFragment extends BaseFragment implements View.OnClickLi
         super.onCreate(savedInstanceState);
         myDataset = new ArrayList<>();
         googleApiClient = ((MainActivity) getActivityReference()).mGoogleApiClient;
+        myDeviceId = Nearby.Connections.getLocalDeviceId(googleApiClient);
     }
 
     @Nullable
@@ -73,7 +75,7 @@ public class ChooseClientFragment extends BaseFragment implements View.OnClickLi
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivityReference()));
         mAdapter = new ChooseClientRecyclerAdapter(myDataset);
         mRecyclerView.setAdapter(mAdapter);
-        addToGameUsers(Nearby.Connections.getLocalDeviceId(googleApiClient), MainApplication.getSharedPreferences().getString(Constants.USER_NAME, "host"));
+        addToGameUsers(myDeviceId, MainApplication.getSharedPreferences().getString(Constants.USER_NAME, "host"));
     }
 
     public void newClientFound(String remoteEndpointId, String remoteDeviceId, String remoteEndpointName, byte[] payload) {
@@ -82,8 +84,12 @@ public class ChooseClientFragment extends BaseFragment implements View.OnClickLi
         addToGameUsers(remoteDeviceId, remoteEndpointName);
         try {
             byte[] fileByteArray = Serializer.serialize(MainApplication.USER_NAME);
-            Nearby.Connections.sendReliableMessage(googleApiClient, remoteEndpointId, fileByteArray);
-            MainApplication.showToast(remoteEndpointId);
+            for (String device :
+                    MainApplication.USER_NAME.keySet()) {
+                if (!device.equalsIgnoreCase(myDeviceId)) {
+                    Nearby.Connections.sendReliableMessage(googleApiClient, MainApplication.USER_REMOTE_ENDPOINT.get(device), fileByteArray);
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -110,8 +116,24 @@ public class ChooseClientFragment extends BaseFragment implements View.OnClickLi
         int id = v.getId();
         switch (id) {
             case R.id.start_game_button:
-                MainApplication.showToast("starting the game");
+                startGame();
                 break;
+        }
+    }
+
+    private void startGame() {
+        try {
+            byte[] startgame = Serializer.serialize(Constants.START_GAME);
+            for (String device :
+                    MainApplication.USER_NAME.keySet()) {
+                if (!device.equalsIgnoreCase(myDeviceId)) {
+                    Nearby.Connections.sendReliableMessage(googleApiClient, MainApplication.USER_REMOTE_ENDPOINT.get(device), startgame);
+                }
+            }
+            ((MainActivity) getActivityReference()).openGameScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            MainApplication.showToast(R.string.something_went_wrong);
         }
     }
 }
