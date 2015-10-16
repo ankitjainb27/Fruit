@@ -35,10 +35,10 @@ public class MainActivity extends AppCompatActivity implements
         Connections.EndpointDiscoveryListener, Controller {
 
     // Identify if the device is the host
-    private boolean mIsHost = false;
-    private GoogleApiClient mGoogleApiClient;
-    private boolean mIsConnected;
-    private String mRemoteHostEndpoint;
+    public boolean mIsHost = false;
+    public GoogleApiClient mGoogleApiClient;
+    public boolean mIsConnected;
+    public String mRemoteHostEndpoint;
     private List<String> mRemotePeerEndpoints = new ArrayList<String>();
     private FrameLayout frameLayout;
     private FragmentTransaction fragmentTransaction;
@@ -126,13 +126,19 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onEndpointFound(String endpointId, String deviceId, final String serviceId, String endpointName) {
+        Log.v("hola", "hola on endpoint found - endpoint id = " + endpointId);
+        Log.v("hola", "hola on device id found - device id = " + deviceId);
+        Log.v("hola", "hola on service id found - service id = " + serviceId);
+        Log.v("hola", "hola on endpoint name found - endpointName = " + endpointName);
         MainApplication.showToast("endpoint found callback called");
 
         BaseFragment baseFragment = (BaseFragment) getSupportFragmentManager().findFragmentById(R.id.mainFrameLayout);
         if (baseFragment instanceof ChooseHostFragment) {
             ((ChooseHostFragment) baseFragment).newHostFount(endpointId, deviceId, serviceId, endpointName);
         }
+    }
 
+    public void connectToHost(final String deviceId, String endpointId, final String serviceId) {
         byte[] payload = null;
 
         Nearby.Connections.sendConnectionRequest(mGoogleApiClient, deviceId,
@@ -140,6 +146,10 @@ public class MainActivity extends AppCompatActivity implements
 
                     @Override
                     public void onConnectionResponse(String endpointId, Status status, byte[] bytes) {
+                        Log.v("hola", "hola on connectionreposnse - endpoint id = " + endpointId);
+                        Log.v("hola", "hola on connectionreposnse - device id = " + deviceId);
+                        Log.v("hola", "hola on connectionreposnse - service id = " + serviceId);
+                        Log.v("hola", "hola on connectionreposnse - status = " + status);
                         if (status.isSuccess()) {
                             MainApplication.showToast("Connected to: " + endpointId);
                             Nearby.Connections.stopDiscovery(mGoogleApiClient, serviceId);
@@ -221,6 +231,9 @@ public class MainActivity extends AppCompatActivity implements
             case OPEN_LAUNCH_FRAGMENT:
                 replaceFragmentInDefaultLayout(LaunchFragment.newInstance());
                 break;
+            case OPEN_CHOOSE_HOST_FRAGMENT:
+                replaceFragmentInDefaultLayout(ChooseHostFragment.newInstance());
+                break;
         }
     }
 
@@ -274,5 +287,6 @@ public class MainActivity extends AppCompatActivity implements
     public void startAdvertising() {
         ConnectionUtils.startAdvertising(mGoogleApiClient, MainActivity.this);
     }
+
 
 }

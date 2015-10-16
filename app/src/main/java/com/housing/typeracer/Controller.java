@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 public interface Controller {
 
     int OPEN_LAUNCH_FRAGMENT = 101;
+    int OPEN_CHOOSE_HOST_FRAGMENT = 102;
 
     void performOperation(final int operation, Object input);
 

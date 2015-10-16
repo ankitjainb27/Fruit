@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.housing.typeracer.Controller;
 import com.housing.typeracer.MainActivity;
 import com.housing.typeracer.R;
 
@@ -34,7 +35,7 @@ public class LaunchFragment extends BaseFragment implements View.OnClickListener
                 ((MainActivity) getActivityReference()).startAdvertising();
                 break;
             case R.id.discover_game_button:
-                ((MainActivity) getActivityReference()).startDiscovery();
+                getFragmentController().performOperation(Controller.OPEN_CHOOSE_HOST_FRAGMENT, null);
                 break;
         }
     }

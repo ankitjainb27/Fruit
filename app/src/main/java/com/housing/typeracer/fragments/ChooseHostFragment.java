@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.housing.typeracer.MainActivity;
 import com.housing.typeracer.R;
 import com.housing.typeracer.adapters.ChooseHostRecyclerAdapter;
 import com.housing.typeracer.listeners.RecyclerItemClickListener;
@@ -27,10 +28,20 @@ public class ChooseHostFragment extends BaseFragment {
     private List<Host> myDataset;
     private ChooseHostRecyclerAdapter mAdapter;
 
+    public static ChooseHostFragment newInstance() {
+        return new ChooseHostFragment();
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         myDataset = new ArrayList<>();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        ((MainActivity) getActivityReference()).startDiscovery();
     }
 
     @Nullable
@@ -52,6 +63,8 @@ public class ChooseHostFragment extends BaseFragment {
                     @Override
                     public void onItemClick(View view, int position) {
                         Log.d(TAG, position + "");
+                        Host data = myDataset.get(position);
+                        ((MainActivity) getActivityReference()).connectToHost(data.getDeviceId(), data.getEndpointId(), data.getServiceId());
                     }
                 })
         );

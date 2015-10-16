@@ -21,7 +21,8 @@
         android:layout_toLeftOf="@+id/imageView"
         android:layout_toRightOf="@id/text_drawable"
         android:layout_toStartOf="@+id/imageView"
-        android:gravity="center" />
+        android:gravity="center_vertical"
+        android:text="hello" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -30,6 +31,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_margin="8dp"
-        android:background="@color/red" />
+        android:background="@color/red"
+        android:src="@color/indigo_blue" />
 
 </RelativeLayout>
