@@ -19,6 +19,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.connection.Connections;
 import com.housing.typeracer.fragments.BaseFragment;
+import com.housing.typeracer.fragments.ChooseClientFragment;
 import com.housing.typeracer.fragments.ChooseHostFragment;
 import com.housing.typeracer.fragments.LaunchFragment;
 
@@ -102,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onConnectionRequest(final String remoteEndpointId, final String remoteDeviceId, final String remoteEndpointName, byte[] payload) {
+    public void onConnectionRequest(final String remoteEndpointId, final String remoteDeviceId, final String remoteEndpointName, final byte[] payload) {
         if (mIsHost && playersCount < Constants.TOTAL_PLAYERS) {
             Nearby.Connections.acceptConnectionRequest(mGoogleApiClient, remoteEndpointId, payload, this).setResultCallback(new ResultCallback<Status>() {
                 @Override
@@ -110,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements
                     if (status.isSuccess()) {
                         if (!mRemotePeerEndpoints.contains(remoteEndpointId)) {
                             mRemotePeerEndpoints.add(remoteEndpointId);
+                            addToUI(remoteEndpointId, remoteDeviceId, remoteEndpointName, payload);
                             playersCount++;
                         }
 
@@ -124,18 +126,21 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    private void addToUI(String remoteEndpointId, String remoteDeviceId, String remoteEndpointName, byte[] payload) {
+        BaseFragment baseFragment = (BaseFragment) getSupportFragmentManager().findFragmentById(R.id.mainFrameLayout);
+        if (baseFragment instanceof ChooseClientFragment) {
+            ((ChooseClientFragment) baseFragment).newClientFound(remoteEndpointId, remoteDeviceId, remoteEndpointName, payload);
+        }
+    }
+
     @Override
     public void onEndpointFound(String endpointId, String deviceId, final String serviceId, String endpointName) {
-        Log.v("hola", "hola on endpoint found - endpoint id = " + endpointId);
-        Log.v("hola", "hola on device id found - device id = " + deviceId);
-        Log.v("hola", "hola on service id found - service id = " + serviceId);
-        Log.v("hola", "hola on endpoint name found - endpointName = " + endpointName);
-        MainApplication.showToast("endpoint found callback called");
 
         BaseFragment baseFragment = (BaseFragment) getSupportFragmentManager().findFragmentById(R.id.mainFrameLayout);
         if (baseFragment instanceof ChooseHostFragment) {
             ((ChooseHostFragment) baseFragment).newHostFount(endpointId, deviceId, serviceId, endpointName);
         }
+
     }
 
     public void connectToHost(final String deviceId, String endpointId, final String serviceId) {
@@ -159,6 +164,7 @@ public class MainActivity extends AppCompatActivity implements
                                 mIsConnected = true;
                             }
                         } else {
+                            Log.d("ERROR", status.getStatusMessage());
                             MainApplication.showToast("Connection to " + endpointId + " failed");
                             if (!mIsHost) {
                                 mIsConnected = false;
