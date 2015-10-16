@@ -3,7 +3,6 @@ package com.housing.typeracer;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -37,11 +36,10 @@ public class ConnectionUtils {
 
     public static void startAdvertising(GoogleApiClient mGoogleApiClient, Connections.ConnectionRequestListener listener) {
         if (!isConnectedToNetwork()) {
-            // Implement logic when device is not connected to a network
             MainApplication.showToast(R.string.not_connected_to_network);
             return;
         }
-
+        Nearby.Connections.stopAdvertising(mGoogleApiClient);
         // Identify that this device is the host
         MainApplication.mIsHost = true;
 
@@ -56,7 +54,7 @@ public class ConnectionUtils {
         // Positive values represent timeout in milliseconds
         long NO_TIMEOUT = 0L;
 
-        String name = null;
+        String name = "Yo this is working";
         Nearby.Connections.startAdvertising(mGoogleApiClient, name, appMetadata, NO_TIMEOUT, listener).setResultCallback(new ResultCallback<Connections.StartAdvertisingResult>() {
             @Override
             public void onResult(Connections.StartAdvertisingResult result) {
@@ -64,7 +62,6 @@ public class ConnectionUtils {
                     MainApplication.showToast(R.string.advertising_now);
                 } else {
                     MainApplication.showToast(R.string.something_went_wrong);
-                    Log.d("startDiscovery", result.getStatus().getStatusMessage());
                 }
             }
         });

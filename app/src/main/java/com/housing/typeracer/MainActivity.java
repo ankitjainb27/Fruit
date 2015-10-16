@@ -95,6 +95,14 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.reconnect();
+        }
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
@@ -156,16 +164,12 @@ public class MainActivity extends AppCompatActivity implements
 
     public void connectToHost(final String deviceId, String endpointId, final String serviceId) {
         byte[] payload = null;
-
-        Nearby.Connections.sendConnectionRequest(mGoogleApiClient, deviceId,
+        String name = "client1";
+        Nearby.Connections.sendConnectionRequest(mGoogleApiClient, name,
                 endpointId, payload, new Connections.ConnectionResponseCallback() {
 
                     @Override
                     public void onConnectionResponse(String endpointId, Status status, byte[] bytes) {
-                        Log.v("hola", "hola on connectionreposnse - endpoint id = " + endpointId);
-                        Log.v("hola", "hola on connectionreposnse - device id = " + deviceId);
-                        Log.v("hola", "hola on connectionreposnse - service id = " + serviceId);
-                        Log.v("hola", "hola on connectionreposnse - status = " + status);
                         if (status.isSuccess()) {
                             MainApplication.showToast("Connected to: " + endpointId);
                             Nearby.Connections.stopDiscovery(mGoogleApiClient, serviceId);
@@ -223,7 +227,6 @@ public class MainActivity extends AppCompatActivity implements
                     @Override
                     public void onResult(Status status) {
                         if (status.isSuccess()) {
-                            MainApplication.showToast(R.string.hosts_found);
                         } else {
                             int statusCode = status.getStatusCode();
                             MainApplication.showToast(R.string.something_went_wrong);

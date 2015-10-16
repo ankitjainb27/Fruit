@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,7 +62,6 @@ public class ChooseHostFragment extends BaseFragment {
                 new RecyclerItemClickListener(getActivityReference(), new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Log.d(TAG, position + "");
                         Host data = myDataset.get(position);
                         ((MainActivity) getActivityReference()).connectToHost(data.getDeviceId(), data.getEndpointId(), data.getServiceId());
                     }
