@@ -26,4 +26,5 @@ public interface Controller {
 
     void clearBackStack(boolean isInclusive);
 
+    int getStatusBarHeight();
 }
