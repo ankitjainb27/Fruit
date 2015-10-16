@@ -1,37 +1,95 @@
 package com.housing.typeracer;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
-public class MainActivity extends AppCompatActivity {
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.nearby.Nearby;
+import com.google.android.gms.nearby.connection.Connections;
+
+
+public class MainActivity extends AppCompatActivity implements
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        View.OnClickListener,
+        Connections.ConnectionRequestListener,
+        Connections.MessageListener,
+        Connections.EndpointDiscoveryListener {
+
+    // Identify if the device is the host
+    private boolean mIsHost = false;
+    private GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(Nearby.CONNECTIONS_API)
+                .build();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    public void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    public void onStop() {
+        super.onStop();
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
         }
+    }
 
-        return super.onOptionsItemSelected(item);
+
+    @Override
+    public void onConnected(Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionRequest(String s, String s1, String s2, byte[] bytes) {
+
+    }
+
+    @Override
+    public void onEndpointFound(String s, String s1, String s2, String s3) {
+
+    }
+
+    @Override
+    public void onEndpointLost(String s) {
+
+    }
+
+    @Override
+    public void onMessageReceived(String s, byte[] bytes, boolean b) {
+
+    }
+
+    @Override
+    public void onDisconnected(String s) {
+
+    }
+
+    @Override
+    public void onClick(View v) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
     }
 }
