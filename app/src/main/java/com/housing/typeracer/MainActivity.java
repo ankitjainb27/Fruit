@@ -1,5 +1,6 @@
 package com.housing.typeracer;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -64,8 +65,10 @@ public class MainActivity extends AppCompatActivity implements
 
     private void initToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar_main);
+        toolbar.setNavigationIcon(R.drawable.default_nav_icon_back);
         setSupportActionBar(toolbar);
     }
+
 
     private void initLaunchFragment() {
         replaceFragmentInDefaultLayout(LaunchFragment.newInstance());
@@ -243,6 +246,18 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    public int getStatusBarHeight() {
+        int statusBarHeight = 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+            if (resourceId > 0) {
+                statusBarHeight = getResources().getDimensionPixelSize(resourceId);
+            }
+        }
+        return statusBarHeight;
+    }
+
+    @Override
     public void onClick(View v) {
 
     }
@@ -250,4 +265,5 @@ public class MainActivity extends AppCompatActivity implements
     public void startAdvertising() {
         ConnectionUtils.startAdvertising(mGoogleApiClient, MainActivity.this);
     }
+
 }

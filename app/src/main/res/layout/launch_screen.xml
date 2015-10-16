@@ -1,24 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="@dimen/padding_medium">
 
     <Button
         android:id="@+id/host_game_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Host a  game" />
+        style="@style/greenButtonStyle"
+        android:layout_alignParentBottom="true" />
 
     <Button
         android:id="@+id/discover_game_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/host_game_button"
-        android:text="Discover a  game" />
+        style="@style/greenButtonStyle"
+        android:layout_above="@id/host_game_button"
+        android:layout_marginBottom="@dimen/padding_medium" />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/discover_game_button">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerInParent="true"
+            android:src="@color/black" />
+    </RelativeLayout>
 </RelativeLayout>

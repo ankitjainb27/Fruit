@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="dove_gray">#616161</color>
+    <color name="wild_sand">#f6f6f6</color>
+    <color name="purple_heart">#7323dc</color>
+    <color name="purple_ripple">#8139e0</color>
+    <color name="mine_shaft">#414141</color>
+    <color name="limeade">#009f32</color>
+    <color name="white">#ffffff</color>
+    <color name="dove_gray_1">#646464</color>
+    <color name="schoolbus_yellow">#FFDC00</color>
+    <color name="vida_loca">#1fc055</color>
+    <color name="red">#db4437</color>
+    <color name="cerise_red">#E62878</color>
+    <color name="alabaster">#fafafa</color>
+    <color name="verdun_green">#00822D</color>
+    <color name="zest">#E68C1E</color>
+    <color name="cod_gray">#191919</color>
+    <color name="black">#000000</color>
+    <color name="black_lightish">#414042</color>
+    <color name="black_50pc">#7F000000</color>
+    <color name="gray">#8A8A8A</color>
+    <color name="dark_grey">#424242</color>
+    <color name="transparent">#00000000</color>
+    <color name="black_12pc">#26000000</color>
+    <color name="black_8pc">#1a000000</color>
+    <color name="black_6pc">#0F000000</color>
+    <color name="yellow_background">#F5DA4C</color>
+
+    <color name="purple_filter">#7323dd</color>
+    <color name="grey_light">#f3f3f3</color>
+    <color name="silver">#CDCDCD</color>
+    <color name="silver_chalice">#9B9B9B</color>
+    <color name="thunder">#231F20</color>
+
+    <color name="amenities_line_color">#dddddd</color>
+    <color name="color_cdcdcd">#cdcdcd</color>
+    <color name="color_E5E5E5">#E5E5E5</color>
+    <color name="color_79000000">#79000000</color>
+
+
+    <!--Shadow colors for layer list-->
+    <color name="shadow_1">#f1f1f1</color>
+    <color name="shadow_2">#ededed</color>
+
+    <!--details screen-->
+    <color name="details_light_black">#414042</color>
+    <color name="details_pink">#ea325d</color>
+    <color name="details_grey">#4d000000</color>
+    <color name="details_medium_black">#191919</color>
+    <color name="details_purple">#7323dd</color>
+    <color name="ripple_details_purple">#580BAB</color>
+    <color name="details_dark_grey">#666666</color>
+    <color name="details_dark_black">#d9000000</color>
+    <color name="details_background_color">#f2f2f2</color>
+    <color name="details_amenity_box_color">#f4f4f4</color>
+    <color name="details_amenities_unselected">#bbbbbb</color>
+
+    <color name="photo_tag_color">#ffdc00</color>
+
+    <color name="donut_unfinished_color">#f25a00d7</color>
+    <color name="donut_small_unfinished_color">#f2f1f1</color>
+    <color name="dialog_header_sub_text">#B3ffffff</color>
+    <color name="dialog_footer_button_color">#f3f3f3</color>
+    <color name="dialog_footer_button_color_pressed">#e6e6e6</color>
+    <color name="greyish_for_box">#f6f6f6</color>
+    <color name="rippelColor">#FFFFFF</color>
+    <color name="color_009F32">#009F32</color>
+    <color name="blackish_txt">#808284</color>
+    <color name="blackish_light">#636466</color>
+    <color name="bright_green_txt">#00ac48</color>
+    <color name="black_3pc">#09000000</color>
+    <color name="black_0pc">#00000000</color>
+    <color name="alto">#D8D8D8</color>
+    <color name="mercury">#E6E6E6</color>
+    <color name="rent_bath_sqft_count_textcolor">#5B5B5B</color>
+    <color name="bottom_carousel_button_color">#DFDFDF</color>
+    <color name="hint_text_color">#8c8c8c</color>
+    <color name="defaultAutocompleteItems_color">#D8000000</color>
+    <color name="info_text_color">#efefef</color>
+    <color name="flat_count_info">#5B5B5B</color>
+    <color name="bright_green">#00A032</color>
+    <color name="back_green">#1FC055</color>
+    <color name="VIDALOCA">#1fc055</color>
+    <color name="FILL">#e8fbea</color>
+    <color name="AXIS">#979797</color>
+
+    <color name="default_circle_indicator_fill_color">#FFFFFFFF</color>
+    <color name="default_circle_indicator_page_color">#00000000</color>
+    <color name="default_circle_indicator_stroke_color">#FFDDDDDD</color>
+    <color name="black_cc_pc">#CC000000</color>
+
+    <color name="gallery_item_text_background_color">#4D4D4D</color>
+    <color name="gallery_item_background_color">#424242</color>
+
+    <color name="black_alert">#343434</color>
+    <color name="home_shortlist_color">#E62878</color>
+    <color name="home_shortlist_text_color">#FFFFFF</color>
+    <color name="home_alert_color">#7323DC</color>
+    <color name="cyan">#00b1d4</color>
+
+    <color name="filter_seek_bar_color">#DDDDDD</color>
+    <color name="filter_seek_bar_shadow">#666666</color>
+    <color name="filters_bg">#F4F4F4</color>
+    <color name="filters_checkbox_textcolor">#343434</color>
+    <color name="filters_amenity_count_buttons">#0fa041</color>
+    <color name="filters_separator_color">#e8e8e8</color>
+    <color name="black_20pc">#33000000</color>
+    <color name="black_25pc">#40000000</color>
+    <color name="black_54pc">#89000000</color>
+    <color name="white_54pc">#89FFFFFF</color>
+    <color name="white_70pc">#4CFFFFFF</color>
+    <color name="black_80pc">#CC000000</color>
+    <color name="black_87pc">#DE000000</color>
+    <color name="grey">#848484</color>
+    <color name="list_background">@color/details_background_color</color>
+    <color name="filters_text_color">#666666</color>
+
+    <color name="filters_button_bg">#E2E6ED</color>
+
+    <color name="home_info_card_sub_heading_color">#8000A032</color>
+    <color name="home_info_card_heading_color">#80000000</color>
+    <color name="config_card_heading_color">#80000000</color>
+    <color name="home_info_card_content_color">#80000000</color>
+    <color name="home_pager_menu_selected_color">#f0ffffff</color>
+    <color name="gallery">#F0F0F0</color>
+
+
+    <color name="list_selected_color">#4378DD</color>
+    <color name="get_alerts_thank_you_submessage_color">#8C000000</color>
+    <color name="toolbar_bg">#7323DC</color>
+
+    <color name="viewpager_selected_dot_color">#7323DC</color>
+    <color name="viewpager_unselected_dot_color">#19000000</color>
+
+    <color name="black_70pc">#4C000000</color>
+    <color name="home_card_divider">#08000000</color>
+    <color name="scroller_divider">#ffdc00</color>
+    <color name="toolbar_menu_color">#FFFFFF</color>
+    <color name="searchfragment_sbox_background">#FFFFFF</color>
+    <color name="searchfragment_separator_color">#DFDFDF</color>
+    <color name="autocomplete_list_color">#FAFAFA</color>
+
+    <color name="transparent_purple">#007323dd</color>
+    <color name="search_fragment_background">#AA000000</color>
+    <color name="tool_tip_down_background">#3A000000</color>
+    <color name="statusbar_color">#20000000</color>
+    <color name="white_transparent">#00ffffff</color>
+    <color name="full_transparent">#00000000</color>
+    <color name="indigo_blue">#581ca8</color>
+    <color name="white_16pc">#29ffffff</color>
+    <color name="vibrant_green">#1fc005</color>
+    <color name="seekbar_deactivate_color">#a0a0a0</color>
+    <color name="login_header_text_color">#ff000000</color>
+    <color name="login_description_text_color">#b3000000</color>
+    <color name="login_fb_color">#3b5998</color>
+    <color name="login_google_color">#dc4b39</color>
+    <color name="irish_green_88pc">#E000A032</color>
+    <color name="light_silver">#eceff0</color>
+    <color name="cod_grey_30">#4d191919</color>
+    <color name="red_d0021b">#d0021b</color>
+    <color name="cod_grey_54">#89191919</color>
+    <color name="grey_54">#89414042</color>
+    <color name="white_50pc">#7fffffff</color>
+    <color name="marigold">#fcc90a</color>
+
+    <color name="primary_dark">#99000000</color>
+    <color name="primary">#7322DB</color>
+
+    <color name="tealish">#29c5a7</color>
+</resources>
