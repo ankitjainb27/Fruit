@@ -95,6 +95,14 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.reconnect();
+        }
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
@@ -156,8 +164,8 @@ public class MainActivity extends AppCompatActivity implements
 
     public void connectToHost(final String deviceId, String endpointId, final String serviceId) {
         byte[] payload = null;
-
-        Nearby.Connections.sendConnectionRequest(mGoogleApiClient, deviceId,
+        String name = "client1";
+        Nearby.Connections.sendConnectionRequest(mGoogleApiClient, name,
                 endpointId, payload, new Connections.ConnectionResponseCallback() {
 
                     @Override
@@ -223,7 +231,6 @@ public class MainActivity extends AppCompatActivity implements
                     @Override
                     public void onResult(Status status) {
                         if (status.isSuccess()) {
-                            MainApplication.showToast(R.string.hosts_found);
                         } else {
                             int statusCode = status.getStatusCode();
                             MainApplication.showToast(R.string.something_went_wrong);
