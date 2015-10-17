@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -152,7 +151,6 @@ public class MainActivity extends AppCompatActivity implements
                             addToUI(remoteEndpointId, remoteDeviceId, remoteEndpointName, payload);
                             playersCount++;
                         }
-
                         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                     }
                 }
@@ -179,10 +177,11 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    public void connectToHost(final String deviceId, String endpointId, final String serviceId) {
+
+    public void connectToHost(String rEndpointId, final String deviceId, final String serviceId) {
         byte[] payload = null;
         Nearby.Connections.sendConnectionRequest(mGoogleApiClient, deviceId,
-                endpointId, payload, new Connections.ConnectionResponseCallback() {
+                rEndpointId, payload, new Connections.ConnectionResponseCallback() {
 
                     @Override
                     public void onConnectionResponse(String endpointId, Status status, byte[] bytes) {
@@ -199,7 +198,6 @@ public class MainActivity extends AppCompatActivity implements
                                 }
                             }
                         } else {
-                            Log.d("ERROR", "connection failed");
                             MainApplication.showToast("Connection to " + endpointId + " failed");
                             if (!MainApplication.mIsHost) {
                                 mIsConnected = false;
