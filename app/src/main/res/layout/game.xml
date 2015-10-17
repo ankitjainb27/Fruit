@@ -174,7 +174,7 @@
                 android:lineSpacingMultiplier="1.5"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:text="air and deep beneath the rolling waves, in labyrinths of coral caves the echo of a distant tide comes willowing across the sand, and everything is green and submarine."
+                android:text="air and deenths of coral caves the echo of a distant tide comes willowing across the sand, and everything is green and submarine"
                 android:textColor="@color/light_blue"
                 android:textSize="18sp" />
         </LinearLayout>

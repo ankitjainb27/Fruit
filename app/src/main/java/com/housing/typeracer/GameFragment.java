@@ -108,14 +108,13 @@ public class GameFragment extends BaseFragment implements TextWatcher, View.OnCl
         }
     }
 
-    private boolean checkIfFinished() {
+    private boolean checkIfFinished(Map<String, Integer> map) {
         int finished = 0;
-        for (String key : MainApplication.USER_SCORE.keySet()) {
-            if (MainApplication.USER_SCORE.get(key) >= text.length()) {
+        for (String key : map.keySet()) {
+            if (map.get(key) >= text.length()) {
                 finished++;
             }
-            int wpm = calculateClientWPM(MainApplication.USER_SCORE.get(key));
-            MainApplication.wpmMap.put(key, wpm);
+            int wpm = calculateClientWPM(map.get(key));
         }
         if (finished == VALUES) {
             return true;
@@ -174,10 +173,6 @@ public class GameFragment extends BaseFragment implements TextWatcher, View.OnCl
 
     private Map<String, Integer> getPlayersPosition() {
         clientEndTime = System.currentTimeMillis();
-        boolean finished = checkIfFinished();
-        if (finished) {
-            getFragmentController().performOperation(Controller.OPEN_LEADERBOARD, null);
-        }
         return MainApplication.USER_SCORE;
     }
 
@@ -281,6 +276,12 @@ public class GameFragment extends BaseFragment implements TextWatcher, View.OnCl
 
     private void updateProgressBar() {
         map = getPlayersPosition();
+        printMap1(map);
+        boolean finished = checkIfFinished(map);
+        Log.v("finished = " + finished, "");
+        if (finished) {
+            getFragmentController().performOperation(Controller.OPEN_LEADERBOARD, null);
+        }
         int pos = new ArrayList<String>(keys).indexOf(myDeviceId);
         position.setText("Position " + pos + "/" + VALUES);
 
