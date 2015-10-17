@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/tealish"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/started_button"
+        style="@style/transparentButtonStyle"
+        android:layout_alignParentBottom="true"
+        android:text="LET'S GET STARTED" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+        <ImageView
+            android:id="@+id/img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/type_dude_splash" />
+
+        <com.housing.typeracer.fonts.TextBold
+            android:id="@+id/app_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/img"
+            android:gravity="center_horizontal"
+            android:text="TypeRush"
+            android:textColor="@color/color_187664"
+            android:textSize="36sp" />
+
+        <com.housing.typeracer.fonts.TextLight
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/app_name"
+            android:gravity="center_horizontal"
+            android:text="Fastest Finger First"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

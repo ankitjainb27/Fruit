@@ -21,9 +21,11 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.connection.Connections;
+import com.housing.typeracer.fragments.AvatarFragment;
 import com.housing.typeracer.fragments.BaseFragment;
 import com.housing.typeracer.fragments.ChooseClientFragment;
 import com.housing.typeracer.fragments.ChooseHostFragment;
+import com.housing.typeracer.fragments.GetStartedFragment;
 import com.housing.typeracer.fragments.LaunchFragment;
 
 import java.util.ArrayList;
@@ -88,14 +90,14 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void initLaunchFragment() {
-        replaceFragmentInDefaultLayout(LaunchFragment.newInstance());
+        replaceFragmentInDefaultLayout(GetStartedFragment.newInstance());
     }
 
     @Override
     public void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
-        myDeviceId = Nearby.Connections.getLocalDeviceId(mGoogleApiClient);
+
     }
 
     @Override
@@ -108,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onConnected(Bundle bundle) {
-
+        myDeviceId = Nearby.Connections.getLocalDeviceId(mGoogleApiClient);
     }
 
     @Override
@@ -283,6 +285,9 @@ public class MainActivity extends AppCompatActivity implements
             case OPEN_CHOOSE_CLIENT_FRAGMENT:
                 replaceFragmentInDefaultLayout(ChooseClientFragment.newInstance());
                 break;
+            case OPEN_AVATAR_SCREEN:
+                replaceFragmentInDefaultLayout(AvatarFragment.newInstance());
+                break;
         }
     }
 
@@ -357,6 +362,14 @@ public class MainActivity extends AppCompatActivity implements
 
     public void openWifiSettings() {
         startActivity(new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS));
+    }
+
+    public void hideToolbar() {
+        toolbar.setVisibility(View.GONE);
+    }
+
+    public void showToolbar() {
+        toolbar.setVisibility(View.VISIBLE);
     }
 
 }

@@ -15,6 +15,8 @@ import java.util.Map;
 public class MainApplication extends Application {
     private static MainApplication context;
     public static boolean mIsHost = false;
+    public static boolean profileSaved = false;
+    public static String prof_key = "prof_saved";
 
     private static SharedPreferences sharedPreferences;
 
