@@ -4,6 +4,14 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
+    <com.housing.typeracer.fonts.TextBold
+        android:id="@+id/games_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/padding_v_large"
+        android:textSize="@dimen/abc_text_size_headline_material" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/my_recycler_view"
         android:layout_width="match_parent"
@@ -13,12 +21,11 @@
 
     <Button
         android:id="@+id/start_game_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/greenButtonStyle"
         android:layout_alignParentBottom="true"
         android:enabled="false"
         android:gravity="center"
-        android:text="start the game"
+        android:text="start game"
         android:textAllCaps="true"
         android:textSize="20sp" />
 

@@ -10,12 +10,17 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.nearby.Nearby;
+import com.housing.typeracer.Constants;
 import com.housing.typeracer.MainActivity;
+import com.housing.typeracer.MainApplication;
 import com.housing.typeracer.R;
+import com.housing.typeracer.Serializer;
 import com.housing.typeracer.adapters.ChooseHostRecyclerAdapter;
 import com.housing.typeracer.listeners.RecyclerItemClickListener;
 import com.housing.typeracer.models.Host;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,7 +70,7 @@ public class ChooseHostFragment extends BaseFragment implements View.OnClickList
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
         confirmedlayout = (RelativeLayout) rootView.findViewById(R.id.confirmed_layout);
         confirmedHdr = (TextView) rootView.findViewById(R.id.hdr);
-        rootView.findViewById(R.id.dismiss_ftr).setOnClickListener(this);
+        rootView.findViewById(R.id.nudge_host_button).setOnClickListener(this);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivityReference()));
         mAdapter = new ChooseHostRecyclerAdapter(myDataset);
@@ -94,9 +99,19 @@ public class ChooseHostFragment extends BaseFragment implements View.OnClickList
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.dismiss_ftr:
-                getFragmentController().onBackPressed();
+            case R.id.nudge_host_button:
+                nudgeHost();
                 break;
+        }
+    }
+
+    private void nudgeHost() {
+        try {
+            byte[] data = Serializer.serialize(Constants.NUDGE_HOST);
+            Nearby.Connections.sendReliableMessage(((MainActivity) getActivityReference()).mGoogleApiClient, ((MainActivity) getActivityReference()).mRemoteHostEndpoint, data);
+        } catch (IOException e) {
+            e.printStackTrace();
+            MainApplication.showToast(R.string.something_went_wrong);
         }
     }
 }

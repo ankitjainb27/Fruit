@@ -35,15 +35,15 @@
             android:textSize="18sp" />
 
         <Button
-            android:id="@+id/dismiss_ftr"
+            android:id="@+id/nudge_host_button"
             style="@style/greenButtonStyle"
             android:layout_alignParentBottom="true"
-            android:text="DISMISS" />
+            android:text="NUDGE THE HOST" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/dismiss_ftr"
+            android:layout_above="@id/nudge_host_button"
             android:layout_below="@id/hdr">
 
             <RelativeLayout

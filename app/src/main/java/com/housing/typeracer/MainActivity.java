@@ -131,8 +131,6 @@ public class MainActivity extends AppCompatActivity implements
                         }
 
                         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-                        MainApplication.showToast(remoteDeviceId + " connected!");
                     }
                 }
             });
@@ -216,6 +214,29 @@ public class MainActivity extends AppCompatActivity implements
 
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+        } else if (isReliable && MainApplication.mIsHost) {
+            try {
+                Object obj = Serializer.deserialize(payload);
+                if (obj instanceof String) {
+                    String data = (String) obj;
+                    if (data.equalsIgnoreCase(Constants.NUDGE_HOST)) {
+                        showNudgeMessage(endpointId);
+                    }
+                }
+            } catch (Exception p) {
+
+            }
+        }
+    }
+
+    private void showNudgeMessage(String endpointId) {
+        for (String key : MainApplication.USER_REMOTE_ENDPOINT.keySet()) {
+            if (null != (MainApplication.USER_REMOTE_ENDPOINT.get(key)) && (MainApplication.USER_REMOTE_ENDPOINT.get(key)).equalsIgnoreCase(endpointId)) {
+                String name = MainApplication.USER_NAME.get(key);
+                if (name != null) {
+                    MainApplication.showToast(name + " wants to start the game.");
+                }
             }
         }
     }
