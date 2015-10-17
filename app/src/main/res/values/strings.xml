@@ -13,5 +13,6 @@
     <string name="advertising_now">You are hosting now.</string>
     <string name="something_went_wrong">Something went wrong</string>
     <string name="already_hosting">You are already a host</string>
+    <string name="waiting_for_others">Waiting for others to join in...</string>
     ...
 </resources>
