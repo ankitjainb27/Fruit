@@ -28,6 +28,7 @@ import com.housing.typeracer.fragments.ChooseClientFragment;
 import com.housing.typeracer.fragments.ChooseHostFragment;
 import com.housing.typeracer.fragments.GetStartedFragment;
 import com.housing.typeracer.fragments.LaunchFragment;
+import com.housing.typeracer.fragments.LeaderboardFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -106,10 +107,6 @@ public class MainActivity extends AppCompatActivity implements
         if (MainApplication.getSharedPreferences().contains(MainApplication.prof_key)) {
             boolean isProfilePresent = MainApplication.getSharedPreferences().getBoolean(MainApplication.prof_key, false);
             if (isProfilePresent) {
-                String userName = MainApplication.getSharedPreferences().getString(MainApplication.username_key, "Anon");
-                int avatarId = MainApplication.getSharedPreferences().getInt(MainApplication.useravatar_key, 100);
-                ((MainApplication) getApplication()).setUserName(userName);
-                ((MainApplication) getApplication()).setAvatarId(avatarId);
                 replaceFragmentInDefaultLayout(LaunchFragment.newInstance());
             } else {
                 replaceFragmentInDefaultLayout(GetStartedFragment.newInstance());
@@ -184,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public void connectToHost(final String deviceId, String endpointId, final String serviceId) {
         byte[] payload = null;
-        String name = "client1";
+        String name = null;
         Nearby.Connections.sendConnectionRequest(mGoogleApiClient, name,
                 endpointId, payload, new Connections.ConnectionResponseCallback() {
 
@@ -226,10 +223,10 @@ public class MainActivity extends AppCompatActivity implements
                 if (obj instanceof HashMap) {
                     Map<String, String> userName = (HashMap<String, String>) obj;
                     showToastToUser(userName);
+
                     MainApplication.USER_NAME.putAll(userName);
                     for (String key : userName.keySet()) {
                         MainApplication.USER_SCORE.put(key, 0);
-                        MainApplication.showToast("RELIABLE DATA : " + key);
                     }
                 } else if (obj instanceof String) {
                     String data = (String) obj;
@@ -270,10 +267,7 @@ public class MainActivity extends AppCompatActivity implements
                 Object obj = Serializer.deserialize(payload);
                 if (obj instanceof Map) {
                     Map<String, Integer> data = (HashMap<String, Integer>) obj;
-
-                    for (String key : data.keySet()) {
-                        MainApplication.USER_SCORE.put(key, data.get(key));
-                    }
+                    updateUsersScore(data);
                 }
             } catch (Exception p) {
 
@@ -281,12 +275,16 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    public static void printMap(Map<String, Integer> map) {
-        for (Map.Entry<String, Integer> entry : map.entrySet()) {
-            System.out.println("[Key] : " + entry.getKey()
-                    + " [Value] : " + entry.getValue());
+    private void updateUsersScore(Map<String, Integer> data) {
+        for (String key : data.keySet()) {
+            int oldScore = MainApplication.USER_SCORE.get(key);
+            int newScore = data.get(key);
+            if (oldScore < newScore) {
+                MainApplication.USER_SCORE.put(key, newScore);
+            }
         }
     }
+
 
     private String getDeviceIdFromEndpoint(String endpoint) {
         for (String key : MainApplication.USER_REMOTE_ENDPOINT.keySet()) {
@@ -375,12 +373,16 @@ public class MainActivity extends AppCompatActivity implements
             case OPEN_GAME_FRAGMENT:
                 openGameScreen();
                 break;
+            case OPEN_LEADERBOARD:
+                replaceFragmentInDefaultLayout(LeaderboardFragment.newInstance());
+                break;
+
         }
     }
 
     @Override
     public Fragment getCurrentFragment() {
-        return null;
+        return getSupportFragmentManager().findFragmentById(R.id.mainFrameLayout);
     }
 
     @Override
@@ -433,7 +435,12 @@ public class MainActivity extends AppCompatActivity implements
     public void onBackPressed() {
         FragmentManager manager = getSupportFragmentManager();
         if (manager.getBackStackEntryCount() > 1) {
-            manager.popBackStack();
+            BaseFragment frag = (BaseFragment) getCurrentFragment();
+            if (frag instanceof LaunchFragment) {
+                finish();
+            } else {
+                manager.popBackStack();
+            }
         } else {
             finish();
         }

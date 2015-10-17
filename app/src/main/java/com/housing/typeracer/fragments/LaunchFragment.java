@@ -5,8 +5,8 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -22,7 +22,6 @@ import com.housing.typeracer.R;
  */
 public class LaunchFragment extends BaseFragment implements View.OnClickListener {
 
-    private RelativeLayout mainLayout;
     private RelativeLayout noWifiLayout;
     Button button;
 
@@ -35,16 +34,17 @@ public class LaunchFragment extends BaseFragment implements View.OnClickListener
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.launch_screen, container, false);
-        mainLayout = (RelativeLayout) rootView.findViewById(R.id.main_layout);
         noWifiLayout = (RelativeLayout) rootView.findViewById(R.id.no_wifi_layout);
         button = (Button) rootView.findViewById(R.id.button);
         rootView.findViewById(R.id.host_game_button).setOnClickListener(this);
         rootView.findViewById(R.id.discover_game_button).setOnClickListener(this);
         rootView.findViewById(R.id.wifi_connect).setOnClickListener(this);
-        String name = ((MainApplication) getActivityReference().getApplication()).getUserName();
-        int id = ((MainApplication) getActivityReference().getApplication()).getAvatarId();
-        int rsrcId = MainApplication.avatarMappings.get(id);
-        ((TextView) rootView.findViewById(R.id.welcomename)).setText(name);
+
+        String userName = MainApplication.getSharedPreferences().getString(MainApplication.username_key, "Anon");
+        int avatarId = MainApplication.getSharedPreferences().getInt(MainApplication.useravatar_key, 100);
+
+        int rsrcId = MainApplication.avatarMappings.get(avatarId);
+        ((TextView) rootView.findViewById(R.id.welcomename)).setText(userName);
         ((ImageView) rootView.findViewById(R.id.avatarid)).setImageResource(rsrcId);
         button.setOnClickListener(this);
         return rootView;

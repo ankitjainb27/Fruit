@@ -32,6 +32,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -60,6 +62,12 @@ public class GameFragment extends BaseFragment implements TextWatcher {
     Map<String, Integer> map;
     Set<String> keys;
 
+    private boolean startCalled = false;
+    private long startTime;
+    private long hostEndTime;
+    private long clientEndTime;
+    private Map<String, Integer> wpmMap;
+
 
     public static GameFragment newInstance() {
         return new GameFragment();
@@ -69,6 +77,7 @@ public class GameFragment extends BaseFragment implements TextWatcher {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        wpmMap = new HashMap<>();
         myDeviceId = ((MainActivity) getActivityReference()).myDeviceId;
         mGoogleApiClient = ((MainActivity) getActivityReference()).mGoogleApiClient;
         deviceRemoteIds = new ArrayList<>();
@@ -86,13 +95,20 @@ public class GameFragment extends BaseFragment implements TextWatcher {
 
     }
 
-    public static void printMap(Map<String, Integer> map) {
+    public static void printMap1(Map<String, Integer> map) {
         for (Map.Entry<String, Integer> entry : map.entrySet()) {
             System.out.println("[Key] : " + entry.getKey()
                     + " [Value] : " + entry.getValue());
         }
     }
-
+    private void printMap(Map mp) {
+        Iterator it = mp.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry) it.next();
+            Log.v("map -", " " + pair.getKey() + " = " + pair.getValue());
+            calculateClientWPM((Integer) pair.getValue());
+        }
+    }
     private static Map<String, Integer> sortByComparator(Map<String, Integer> unsortMap) {
 
         // Convert Map to List
@@ -143,8 +159,11 @@ public class GameFragment extends BaseFragment implements TextWatcher {
     }
 
     private Map<String, Integer> getPlayersPosition() {
+        clientEndTime = System.currentTimeMillis();
+     //   printMap(MainApplication.USER_SCORE);
         return MainApplication.USER_SCORE;
     }
+
 
     @Nullable
     @Override
@@ -231,7 +250,7 @@ public class GameFragment extends BaseFragment implements TextWatcher {
 
         Log.i("ankitt", String.valueOf(keys.size()));
 
-        printMap(map);
+        printMap1(map);
         int i = 0;
         for (String key : keys) {
             lp.width = (width * map.get(key)) / text.length();
@@ -331,10 +350,15 @@ public class GameFragment extends BaseFragment implements TextWatcher {
         Log.i("ankit_ON_S", s.toString());
         Log.i("ankit_ON_counter", String.valueOf(counterText));
 */
+
+        if (!startCalled) {
+            startTime = System.currentTimeMillis();
+            startCalled = true;
+        }
+
         if (count > before) {
             if (flag == 0) {
                 if (counterText + start < text.length()) {
-
                     if (!(Character.toString(text.charAt(counterText + start))).equals(Character.toString(s.charAt(start)))) {
                         if (!Character.toString(s.charAt(start)).equals(" ")) {
                             input.setBackgroundColor(Color.RED);
@@ -364,6 +388,8 @@ public class GameFragment extends BaseFragment implements TextWatcher {
                     input.setText("");
                     progressMy++;
 
+                    hostEndTime = System.currentTimeMillis();
+                    calculateHostWPM();
                 }
             }
         } else if (count < before) {
@@ -412,6 +438,19 @@ public class GameFragment extends BaseFragment implements TextWatcher {
         }
    */
 
+    }
+
+    private void calculateHostWPM() {
+        int noOfWords = Utils.countWords(text);
+        long timeToTypeInMillis = hostEndTime - startTime;
+        long oneMinInMillis = 60000L;
+        long wpm = (oneMinInMillis * noOfWords) / timeToTypeInMillis;
+    }
+
+    private void calculateClientWPM(int noOfWords) {
+        long timeToTypeInMillis = clientEndTime - startTime;
+        long oneMinInMillis = 60000L;
+        long wpm = (oneMinInMillis * noOfWords) / timeToTypeInMillis;
     }
 
     private int afterIndex(int counterText) {

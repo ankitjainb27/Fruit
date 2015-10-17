@@ -15,6 +15,7 @@ import java.util.Map;
 public class MainApplication extends Application {
     private static MainApplication context;
     public static boolean mIsHost = false;
+    public static boolean allowUserAddition = false;
     public static boolean profileSaved = false;
     public static String prof_key = "prof_saved";
     public static String username_key = "username";
@@ -26,10 +27,6 @@ public class MainApplication extends Application {
     public static Map<String, String> USER_REMOTE_ENDPOINT;
     public static Map<String, Integer> USER_SCORE;
     public static Map<Integer, Integer> avatarMappings;
-
-    private String userName;
-    private int avatarId;
-
 
     @Override
     public void onCreate() {
@@ -85,21 +82,6 @@ public class MainApplication extends Application {
         }
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public int getAvatarId() {
-        return avatarId;
-    }
-
-    public void setAvatarId(int avatarId) {
-        this.avatarId = avatarId;
-    }
 
     public static SharedPreferences getSharedPreferences() {
         return sharedPreferences;
