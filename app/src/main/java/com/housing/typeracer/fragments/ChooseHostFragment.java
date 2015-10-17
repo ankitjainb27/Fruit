@@ -70,7 +70,7 @@ public class ChooseHostFragment extends BaseFragment implements View.OnClickList
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
         confirmedlayout = (RelativeLayout) rootView.findViewById(R.id.confirmed_layout);
         confirmedHdr = (TextView) rootView.findViewById(R.id.hdr);
-        rootView.findViewById(R.id.dismiss_ftr).setOnClickListener(this);
+        rootView.findViewById(R.id.nudge_host_button).setOnClickListener(this);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivityReference()));
         mAdapter = new ChooseHostRecyclerAdapter(myDataset);
@@ -99,13 +99,12 @@ public class ChooseHostFragment extends BaseFragment implements View.OnClickList
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.dismiss_ftr:
-                getFragmentController().onBackPressed();
+            case R.id.nudge_host_button:
+                nudgeHost();
                 break;
         }
     }
 
-    // TODO call this method
     private void nudgeHost() {
         try {
             byte[] data = Serializer.serialize(Constants.NUDGE_HOST);

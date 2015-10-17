@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.nearby.Nearby;
@@ -78,8 +79,8 @@ public class ChooseClientFragment extends BaseFragment implements View.OnClickLi
         mAdapter = new ChooseClientRecyclerAdapter(myDataset);
         mRecyclerView.setAdapter(mAdapter);
         addToGameUsers(myDeviceId, MainApplication.getSharedPreferences().getString(Constants.USER_NAME, "Host"), myRemoteId);
-        myDataset.add(new Client(Nearby.Connections.getLocalEndpointId(googleApiClient), myDeviceId, MainApplication.getSharedPreferences().getString(Constants.USER_NAME, "host"), null));
-        mAdapter.notifyDataSetChanged();
+
+        ((TextView) rootView.findViewById(R.id.games_name)).setText(MainApplication.getSharedPreferences().getString(Constants.USER_NAME, "Host") + "'s Game");
     }
 
     public void newClientFound(String remoteEndpointId, String remoteDeviceId, String remoteEndpointName, byte[] payload) {
@@ -101,14 +102,7 @@ public class ChooseClientFragment extends BaseFragment implements View.OnClickLi
             startGameButton.setEnabled(true);
         }
     }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-//        if (null != ((MainActivity) getActivityReference()).mGoogleApiClient && ((MainActivity) getActivityReference()).mGoogleApiClient.isConnected()) {
-//            Nearby.Connections.stopAdvertising(((MainActivity) getActivityReference()).mGoogleApiClient);
-//        }
-    }
+    
 
     private void addToGameUsers(String deviceId, String name, String remoteEndPoint) {
         MainApplication.USER_NAME.put(deviceId, name);
