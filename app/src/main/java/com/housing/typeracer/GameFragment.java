@@ -47,7 +47,9 @@ public class GameFragment extends BaseFragment implements TextWatcher {
     RelativeLayout progressImages;
     private GoogleApiClient mGoogleApiClient;
     private List<String> deviceRemoteIds;
-
+    private boolean startCalled = false;
+    private long startTime;
+    private long endTime;
 
     public static GameFragment newInstance() {
         return new GameFragment();
@@ -185,10 +187,15 @@ public class GameFragment extends BaseFragment implements TextWatcher {
         Log.i("ankit_ON_before", String.valueOf(before));
         Log.i("ankit_ON_S", s.toString());
         Log.i("ankit_ON_counter", String.valueOf(counterText));
+
+        if (!startCalled) {
+            startTime = System.currentTimeMillis();
+            startCalled = true;
+        }
+
         if (count > before) {
             if (flag == 0) {
                 if (counterText + start < text.length()) {
-
                     if (!(Character.toString(text.charAt(counterText + start))).equals(Character.toString(s.charAt(start)))) {
                         if (!Character.toString(s.charAt(start)).equals(" ")) {
                             input.setBackgroundColor(Color.RED);
@@ -215,6 +222,8 @@ public class GameFragment extends BaseFragment implements TextWatcher {
                     }
                 } else {
                     input.setText("");
+                    endTime = System.currentTimeMillis();
+                    calculateWPM();
                 }
             }
         } else if (count < before) {
@@ -263,6 +272,13 @@ public class GameFragment extends BaseFragment implements TextWatcher {
         }
    */
 
+    }
+
+    private void calculateWPM() {
+        int noOfWords = Utils.countWords(text);
+        long timeToTypeInMillis = endTime - startTime;
+        long oneMinInMillis = 60000L;
+        long wpm = (oneMinInMillis * noOfWords) / timeToTypeInMillis;
     }
 
     private int afterIndex(int counterText) {

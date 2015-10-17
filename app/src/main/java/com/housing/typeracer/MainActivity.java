@@ -362,6 +362,7 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case OPEN_AVATAR_SCREEN:
                 replaceFragmentInDefaultLayout(AvatarFragment.newInstance());
+                break;
             case OPEN_GAME_FRAGMENT:
                 openGameScreen();
                 break;
