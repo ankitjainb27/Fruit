@@ -5,7 +5,7 @@
     <item name="primary_dark" type="color">#66000000</item>
     <item name="accent" type="color">#44BABA</item>
     <color name="blue">#27273d</color>
-    <color name="light_blue">#4d27273d</color>
+    <color name="light_blue">#3327273d</color>
 
     <color name="dove_gray">#616161</color>
     <color name="wild_sand">#f6f6f6</color>

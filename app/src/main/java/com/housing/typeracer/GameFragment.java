@@ -2,9 +2,9 @@ package com.housing.typeracer;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.Layout;
 import android.text.SpannableString;
 import android.text.TextWatcher;
@@ -17,12 +17,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.housing.typeracer.fragments.BaseFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GameFragment extends BaseFragment implements TextWatcher {
 
@@ -33,10 +36,11 @@ public class GameFragment extends BaseFragment implements TextWatcher {
     int flag = 0;
     int mistake;
     SpannableString styledString;
-    private int progressStatus = 0;
-    private Handler handler = new Handler();
     ScrollView scrollView;
-    ArrayList<Integer> list = new ArrayList<>();
+    List<Integer> list = new ArrayList<>();
+    ImageView[] IMGS;
+    public static int VALUES;
+    RelativeLayout progressImages;
 
 
     public static GameFragment newInstance() {
@@ -47,9 +51,6 @@ public class GameFragment extends BaseFragment implements TextWatcher {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /*getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
-
     }
 
 
@@ -62,7 +63,7 @@ public class GameFragment extends BaseFragment implements TextWatcher {
     }
 
     private void initViews(View rootView) {
-
+        ((MainActivity) getActivityReference()).hideToolbar();
         para = (TextView) rootView.findViewById(R.id.tvPara);
         input = (EditText) rootView.findViewById(R.id.etInput);
         scrollView = (ScrollView) rootView.findViewById(R.id.scrollView);
@@ -74,6 +75,15 @@ public class GameFragment extends BaseFragment implements TextWatcher {
                 return true;
             }
         });
+        input.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+        progressImages = (RelativeLayout) rootView.findViewById(R.id.progress_images);
+        IMGS = new ImageView[VALUES];
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, dpToPx(6));
+        for (int i = 0; i < VALUES; i++) {
+            IMGS[i] = (ImageView) progressImages.getChildAt(0);
+            lp.width = 50 * (i + 1);
+            IMGS[i].setLayoutParams(lp);
+        }
         para.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -83,20 +93,14 @@ public class GameFragment extends BaseFragment implements TextWatcher {
 
                 // Loop over all the lines and do whatever you need with
                 // the width of the line
-                for (int i = 0; i < layout.getLineCount(); i++) {
+                for (int i = 0; i < layout.getLineCount() - 1; i++) {
                     int end = layout.getLineEnd(i);
-                    list.add(i);
-                    Log.i("ankitscroll", String.valueOf(end));
-                    if (i == 0) {
-                        //   scrollView.scrollTo(0, para.getLineHeight());
-                    }
-                   /* SpannableString content = new SpannableString(para.getText().toString());
-                    content.setSpan(new StyleSpan(Typeface.BOLD), 0, end, 0);
-                    content.setSpan(new StyleSpan(Typeface.NORMAL), end, content.length(), 0);
-                   */ //      para.setText(content);
+                    Log.i("ankitp", String.valueOf(end));
+                    list.add(end);
                 }
             }
         });
+
         styledString
                 = new SpannableString(text);
         styledString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.blue)), 0, afterIndex(counterText), 0);
@@ -141,20 +145,15 @@ public class GameFragment extends BaseFragment implements TextWatcher {
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-
         Log.i("ankit_ON_start", String.valueOf(start));
         Log.i("ankit_ON_count", String.valueOf(count));
         Log.i("ankit_ON_before", String.valueOf(before));
         Log.i("ankit_ON_S", s.toString());
         Log.i("ankit_ON_counter", String.valueOf(counterText));
-       /* if (list.contains(counterText)) {
-            scrollView.scrollTo(0, para.getLineHeight());
-            Log.i("ankit", "came" + String.valueOf(counterText));
-        }
-       */
         if (count > before) {
             if (flag == 0) {
-                if (counterText < text.length() - 1) {
+                if (counterText + start < text.length()) {
+
                     if (!(Character.toString(text.charAt(counterText + start))).equals(Character.toString(s.charAt(start)))) {
                         if (!Character.toString(s.charAt(start)).equals(" ")) {
                             input.setBackgroundColor(Color.RED);
@@ -165,15 +164,22 @@ public class GameFragment extends BaseFragment implements TextWatcher {
                         }
                     } else {
                         if ((Character.toString(s.charAt(start))).equals(" ")) {
+                            // Log.i("ankitu", String.valueOf(progressStatus));
                             input.setText("");
                             counterText = counterText + start + 1;
-                            Log.i("ankit_ON_counter1", String.valueOf(counterText));
+                            if (list.contains(counterText)) {
+                                scrollView.scrollTo(0, para.getLineHeight() * (list.indexOf(counterText) + 1));
+                                //         Log.i("ankit", "came" + String.valueOf(counterText));
+                            }
+                            //    Log.i("ankit_ON_counter1", String.valueOf(counterText));
                             styledString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.light_blue)), 0, text.length(), 0);
                             styledString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.blue)), counterText, afterIndex(counterText), 0);
-                            Log.i("ankit_ON_after", String.valueOf(afterIndex(counterText)));
+                            //    Log.i("ankit_ON_after", String.valueOf(afterIndex(counterText)));
                             para.setText(styledString);
                         }
                     }
+                } else {
+                    input.setText("");
                 }
             }
         } else if (count < before) {
@@ -226,11 +232,16 @@ public class GameFragment extends BaseFragment implements TextWatcher {
 
     private int afterIndex(int counterText) {
         int afterIndex = counterText;
-        if (counterText < text.length() - 1) {
+        Log.i("ankitc", String.valueOf(counterText));
+        if (counterText < text.length()) {
             if (!Character.toString(text.charAt(counterText)).equals(" ")) {
                 for (int i = counterText; i < text.length(); i++) {
+                    Log.i("ankitc", String.valueOf(i));
                     if (Character.toString(text.charAt(i)).equals(" ")) {
                         afterIndex = i;
+                        break;
+                    } else if (i == text.length() - 1) {
+                        afterIndex = i + 1;
                         break;
                     }
                 }
@@ -239,24 +250,6 @@ public class GameFragment extends BaseFragment implements TextWatcher {
         return afterIndex;
     }
 
-    private int beforeIndex(int counterText) {
-        int beforeIndex = counterText;
-
-        if (!Character.toString(text.charAt(counterText)).equals(" ")) {
-            if (counterText == 1) {
-                beforeIndex = 0;
-            } else {
-                for (int i = counterText; i > 0; i--) {
-                    if (Character.toString(text.charAt(i)).equals(" ")) {
-                        beforeIndex = i;
-                        break;
-                    }
-                }
-            }
-        }
-        return beforeIndex;
-
-    }
 
     @Override
     public void afterTextChanged(Editable s) {

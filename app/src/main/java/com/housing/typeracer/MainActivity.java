@@ -361,4 +361,8 @@ public class MainActivity extends AppCompatActivity implements
         startActivity(new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS));
     }
 
+    public void hideToolbar() {
+        toolbar.setVisibility(View.GONE);
+    }
+
 }
