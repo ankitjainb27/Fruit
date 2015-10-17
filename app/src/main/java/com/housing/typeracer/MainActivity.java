@@ -270,10 +270,20 @@ public class MainActivity extends AppCompatActivity implements
                 Object obj = Serializer.deserialize(payload);
                 if (obj instanceof Map) {
                     Map<String, Integer> data = (HashMap<String, Integer>) obj;
-                    MainApplication.USER_SCORE.putAll(data);
+                    updateUsersScore(data);
                 }
             } catch (Exception p) {
 
+            }
+        }
+    }
+
+    private void updateUsersScore(Map<String, Integer> data) {
+        for (String key : data.keySet()) {
+            int oldScore = MainApplication.USER_SCORE.get(key);
+            int newScore = data.get(key);
+            if (oldScore < newScore) {
+                MainApplication.USER_SCORE.put(key, newScore);
             }
         }
     }
