@@ -39,10 +39,12 @@ public class LaunchFragment extends BaseFragment implements View.OnClickListener
         rootView.findViewById(R.id.host_game_button).setOnClickListener(this);
         rootView.findViewById(R.id.discover_game_button).setOnClickListener(this);
         rootView.findViewById(R.id.wifi_connect).setOnClickListener(this);
-        String name = ((MainApplication) getActivityReference().getApplication()).getUserName();
-        int id = ((MainApplication) getActivityReference().getApplication()).getAvatarId();
-        int rsrcId = MainApplication.avatarMappings.get(id);
-        ((TextView) rootView.findViewById(R.id.welcomename)).setText(name);
+
+        String userName = MainApplication.getSharedPreferences().getString(MainApplication.username_key, "Anon");
+        int avatarId = MainApplication.getSharedPreferences().getInt(MainApplication.useravatar_key, 100);
+
+        int rsrcId = MainApplication.avatarMappings.get(avatarId);
+        ((TextView) rootView.findViewById(R.id.welcomename)).setText(userName);
         ((ImageView) rootView.findViewById(R.id.avatarid)).setImageResource(rsrcId);
         button.setOnClickListener(this);
         return rootView;

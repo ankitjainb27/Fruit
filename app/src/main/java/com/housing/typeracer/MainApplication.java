@@ -27,10 +27,6 @@ public class MainApplication extends Application {
     public static Map<String, Integer> USER_SCORE;
     public static Map<Integer, Integer> avatarMappings;
 
-    private String userName;
-    private int avatarId;
-
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -85,21 +81,6 @@ public class MainApplication extends Application {
         }
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public int getAvatarId() {
-        return avatarId;
-    }
-
-    public void setAvatarId(int avatarId) {
-        this.avatarId = avatarId;
-    }
 
     public static SharedPreferences getSharedPreferences() {
         return sharedPreferences;

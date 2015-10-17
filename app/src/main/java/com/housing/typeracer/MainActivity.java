@@ -107,10 +107,6 @@ public class MainActivity extends AppCompatActivity implements
         if (MainApplication.getSharedPreferences().contains(MainApplication.prof_key)) {
             boolean isProfilePresent = MainApplication.getSharedPreferences().getBoolean(MainApplication.prof_key, false);
             if (isProfilePresent) {
-                String userName = MainApplication.getSharedPreferences().getString(MainApplication.username_key, "Anon");
-                int avatarId = MainApplication.getSharedPreferences().getInt(MainApplication.useravatar_key, 100);
-                ((MainApplication) getApplication()).setUserName(userName);
-                ((MainApplication) getApplication()).setAvatarId(avatarId);
                 replaceFragmentInDefaultLayout(LaunchFragment.newInstance());
             } else {
                 replaceFragmentInDefaultLayout(GetStartedFragment.newInstance());
@@ -385,7 +381,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public Fragment getCurrentFragment() {
-        return null;
+        return getSupportFragmentManager().findFragmentById(R.id.mainFrameLayout);
     }
 
     @Override
@@ -438,7 +434,12 @@ public class MainActivity extends AppCompatActivity implements
     public void onBackPressed() {
         FragmentManager manager = getSupportFragmentManager();
         if (manager.getBackStackEntryCount() > 1) {
-            manager.popBackStack();
+            BaseFragment frag = (BaseFragment) getCurrentFragment();
+            if (frag instanceof LaunchFragment) {
+                finish();
+            } else {
+                manager.popBackStack();
+            }
         } else {
             finish();
         }
