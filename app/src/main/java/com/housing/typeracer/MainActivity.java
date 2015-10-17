@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements
     private FragmentTransaction fragmentTransaction;
     private Toolbar toolbar;
     private int playersCount = 0;
+    private String myDeviceId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
+        myDeviceId = Nearby.Connections.getLocalDeviceId(mGoogleApiClient);
     }
 
     @Override
@@ -197,6 +199,7 @@ public class MainActivity extends AppCompatActivity implements
                 Object obj = Serializer.deserialize(payload);
                 if (obj instanceof HashMap) {
                     Map<String, String> userName = (HashMap<String, String>) obj;
+                    showToastToUser(userName);
                     MainApplication.USER_NAME.putAll(userName);
                     for (String key : userName.keySet()) {
                         MainApplication.USER_SCORE.put(key, 0);
@@ -211,6 +214,15 @@ public class MainActivity extends AppCompatActivity implements
 
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    private void showToastToUser(Map<String, String> userName) {
+        for (String key : userName.keySet()) {
+            String name = MainApplication.USER_NAME.get(key);
+            if (name != null && myDeviceId != null && !key.equalsIgnoreCase(myDeviceId)) {
+                MainApplication.showToast(name + " also joined!");
             }
         }
     }
