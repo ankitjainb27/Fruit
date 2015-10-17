@@ -257,21 +257,40 @@ public class MainActivity extends AppCompatActivity implements
             try {
                 Object obj = Serializer.deserialize(payload);
                 if (obj instanceof Integer) {
+                    String deviceId = getDeviceIdFromEndpoint(endpointId);
+                    if (deviceId != null) {
+                        MainApplication.USER_SCORE.put(deviceId, (Integer) obj);
 
+                    }
                 }
             } catch (Exception p) {
+            }
+        } else if (!isReliable && !MainApplication.mIsHost) {
+            try {
+                Object obj = Serializer.deserialize(payload);
+                if (obj instanceof Map) {
+                    Map<String, Integer> data = (HashMap<String, Integer>) obj;
+                    MainApplication.USER_SCORE.putAll(data);
+                }
+            } catch (Exception p) {
+
             }
         }
     }
 
-    private void showNudgeMessage(String endpointId) {
+    private String getDeviceIdFromEndpoint(String endpoint) {
         for (String key : MainApplication.USER_REMOTE_ENDPOINT.keySet()) {
-            if (null != (MainApplication.USER_REMOTE_ENDPOINT.get(key)) && (MainApplication.USER_REMOTE_ENDPOINT.get(key)).equalsIgnoreCase(endpointId)) {
-                String name = MainApplication.USER_NAME.get(key);
-                if (name != null) {
-                    MainApplication.showToast(name + " wants to start the game.");
-                }
+            if (null != (MainApplication.USER_REMOTE_ENDPOINT.get(key)) && (MainApplication.USER_REMOTE_ENDPOINT.get(key)).equalsIgnoreCase(endpoint)) {
+                return MainApplication.USER_NAME.get(key);
             }
+        }
+        return null;
+    }
+
+    private void showNudgeMessage(String endpointId) {
+        String name = getDeviceIdFromEndpoint(endpointId);
+        if (name != null) {
+            MainApplication.showToast(name + " wants to start the game.");
         }
     }
 

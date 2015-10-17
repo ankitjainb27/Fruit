@@ -46,6 +46,7 @@ public class GameFragment extends BaseFragment implements TextWatcher {
     public static int VALUES;
     RelativeLayout progressImages;
     private GoogleApiClient mGoogleApiClient;
+    private List<String> deviceRemoteIds;
 
 
     public static GameFragment newInstance() {
@@ -58,6 +59,12 @@ public class GameFragment extends BaseFragment implements TextWatcher {
         super.onCreate(savedInstanceState);
         myDeviceId = ((MainActivity) getActivityReference()).myDeviceId;
         mGoogleApiClient = ((MainActivity) getActivityReference()).mGoogleApiClient;
+        deviceRemoteIds = new ArrayList<>();
+        for (String key : MainApplication.USER_REMOTE_ENDPOINT.keySet()) {
+            if (!key.equalsIgnoreCase(myDeviceId)) {
+                deviceRemoteIds.add(MainApplication.USER_REMOTE_ENDPOINT.get(key));
+            }
+        }
     }
 
     private void pushMyPosition(int pos) {
@@ -70,13 +77,17 @@ public class GameFragment extends BaseFragment implements TextWatcher {
             }
         } else {
             MainApplication.USER_SCORE.put(myDeviceId, pos);
+            try {
+                byte[] data = Serializer.serialize(MainApplication.USER_SCORE);
+                Nearby.Connections.sendUnreliableMessage(mGoogleApiClient, deviceRemoteIds, data);
+            } catch (Exception p) {
+            }
         }
     }
 
     private Map<String, Integer> getPlayersPosition() {
         return MainApplication.USER_SCORE;
     }
-
 
     @Nullable
     @Override
