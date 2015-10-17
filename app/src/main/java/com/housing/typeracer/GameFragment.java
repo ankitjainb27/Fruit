@@ -22,13 +22,22 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.nearby.Nearby;
 import com.housing.typeracer.fragments.BaseFragment;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class GameFragment extends BaseFragment implements TextWatcher {
 
+    private String myDeviceId;
     TextView para;
     EditText input;
     String text;
@@ -39,12 +48,15 @@ public class GameFragment extends BaseFragment implements TextWatcher {
     ScrollView scrollView;
     List<Integer> list = new ArrayList<>();
     ImageView[] IMGS;
-    public static int VALUES = 3;
+    public static int VALUES = 0;
     RelativeLayout progressImages;
     int progressMy = 0;
     Thread t;
     RelativeLayout.LayoutParams lp;
     int width;
+    private GoogleApiClient mGoogleApiClient;
+    private List<String> deviceRemoteIds;
+    Map<String, Integer> map;
 
 
     public static GameFragment newInstance() {
@@ -55,6 +67,59 @@ public class GameFragment extends BaseFragment implements TextWatcher {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        myDeviceId = ((MainActivity) getActivityReference()).myDeviceId;
+        mGoogleApiClient = ((MainActivity) getActivityReference()).mGoogleApiClient;
+        deviceRemoteIds = new ArrayList<>();
+        for (String key : MainApplication.USER_REMOTE_ENDPOINT.keySet()) {
+            if (!key.equalsIgnoreCase(myDeviceId)) {
+                deviceRemoteIds.add(MainApplication.USER_REMOTE_ENDPOINT.get(key));
+            }
+        }
+        map = getPlayersPosition();
+        map = sortByComparator(map);
+        VALUES = map.size();
+
+    }
+
+    private static Map<String, Integer> sortByComparator(Map<String, Integer> unsortMap) {
+
+        // Convert Map to List
+        List<Map.Entry<String, Integer>> list =
+                new LinkedList<Map.Entry<String, Integer>>(unsortMap.entrySet());
+
+        // Sort list with comparator, to compare the Map values
+        Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
+            public int compare(Map.Entry<String, Integer> o1,
+                               Map.Entry<String, Integer> o2) {
+                return (o1.getValue()).compareTo(o2.getValue());
+            }
+        });
+
+        // Convert sorted map back to a Map
+        Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
+        for (Iterator<Map.Entry<String, Integer>> it = list.iterator(); it.hasNext(); ) {
+            Map.Entry<String, Integer> entry = it.next();
+            sortedMap.put(entry.getKey(), entry.getValue());
+        }
+        return sortedMap;
+    }
+
+    private void pushMyPosition(int pos) {
+        if (!MainApplication.mIsHost) {
+            try {
+                byte[] data = Serializer.serialize(pos);
+                Nearby.Connections.sendUnreliableMessage(mGoogleApiClient, ((MainActivity) getActivityReference()).mRemoteHostEndpoint, data);
+            } catch (Exception p) {
+                p.printStackTrace();
+            }
+        } else {
+            MainApplication.USER_SCORE.put(myDeviceId, pos);
+            try {
+                byte[] data = Serializer.serialize(MainApplication.USER_SCORE);
+                Nearby.Connections.sendUnreliableMessage(mGoogleApiClient, deviceRemoteIds, data);
+            } catch (Exception p) {
+            }
+        }
     }
 
     @Override
@@ -62,6 +127,10 @@ public class GameFragment extends BaseFragment implements TextWatcher {
         super.onDestroy();
         t.interrupt();
 
+    }
+
+    private Map<String, Integer> getPlayersPosition() {
+        return MainApplication.USER_SCORE;
     }
 
     @Nullable
@@ -87,7 +156,6 @@ public class GameFragment extends BaseFragment implements TextWatcher {
                        }
         );
         width = imageView.getMeasuredWidth();
-
         input.addTextChangedListener(this);
         text = para.getText().toString();
         scrollView.setOnTouchListener(new View.OnTouchListener() {
@@ -134,7 +202,8 @@ public class GameFragment extends BaseFragment implements TextWatcher {
                         getActivityReference().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                updateTextView();
+                                pushMyPosition(progressMy);
+                                updateProgressBar();
                             }
                         });
                     }
@@ -142,16 +211,15 @@ public class GameFragment extends BaseFragment implements TextWatcher {
                 }
             }
         };
-
         t.start();
-
-
     }
 
-    private void updateTextView() {
-        lp.width = (width * progressMy) / para.length();
-        IMGS[0].setLayoutParams(lp);
-        // Toast.makeText(getActivityReference(), "now", Toast.LENGTH_SHORT).show();
+    private void updateProgressBar() {
+        for (int i = VALUES - 1; i == 0; i--) {
+            lp.width = (width * progressMy) / map.get(i);
+            IMGS[i].setLayoutParams(lp);
+            //  IMGS[i].setBackground();
+        }
     }
 
 
@@ -305,3 +373,4 @@ public class GameFragment extends BaseFragment implements TextWatcher {
     public void afterTextChanged(Editable s) {
     }
 }
+

@@ -5,8 +5,10 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.google.android.gms.nearby.Nearby;
 import com.housing.typeracer.ConnectionUtils;
@@ -39,6 +41,11 @@ public class LaunchFragment extends BaseFragment implements View.OnClickListener
         rootView.findViewById(R.id.host_game_button).setOnClickListener(this);
         rootView.findViewById(R.id.discover_game_button).setOnClickListener(this);
         rootView.findViewById(R.id.wifi_connect).setOnClickListener(this);
+        String name = ((MainApplication) getActivityReference().getApplication()).getUserName();
+        int id = ((MainApplication) getActivityReference().getApplication()).getAvatarId();
+        int rsrcId = MainApplication.avatarMappings.get(id);
+        ((TextView) rootView.findViewById(R.id.welcomename)).setText(name);
+        ((ImageView) rootView.findViewById(R.id.avatarid)).setImageResource(rsrcId);
         button.setOnClickListener(this);
         return rootView;
     }
@@ -51,8 +58,7 @@ public class LaunchFragment extends BaseFragment implements View.OnClickListener
     @Override
     public void onResume() {
         super.onResume();
-
-        ((MainActivity) getActivityReference()).setToolbarTitle("Type Rush");
+        ((MainActivity) getActivityReference()).setToolbarTitle("Welcome");
         if (!ConnectionUtils.isConnectedToNetwork()) {
             noWifiLayout.setVisibility(View.VISIBLE);
         } else {

@@ -15,18 +15,38 @@ import java.util.Map;
 public class MainApplication extends Application {
     private static MainApplication context;
     public static boolean mIsHost = false;
+    public static boolean profileSaved = false;
+    public static String prof_key = "prof_saved";
+    public static String username_key = "username";
+    public static String useravatar_key = "avatar";
 
     private static SharedPreferences sharedPreferences;
 
     public static Map<String, String> USER_NAME;
     public static Map<String, String> USER_REMOTE_ENDPOINT;
     public static Map<String, Integer> USER_SCORE;
+    public static Map<Integer, Integer> avatarMappings;
+
+    private String userName;
+    private int avatarId;
+
 
     @Override
     public void onCreate() {
         super.onCreate();
         context = this;
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        avatarMappings = new HashMap<>();
+        avatarMappings.put(1, R.drawable.robo_1);
+        avatarMappings.put(2, R.drawable.robo_2);
+        avatarMappings.put(3, R.drawable.robo_3);
+        avatarMappings.put(4, R.drawable.robo_4);
+        avatarMappings.put(5, R.drawable.robo_5);
+        avatarMappings.put(6, R.drawable.robo_6);
+        avatarMappings.put(7, R.drawable.robo_7);
+        avatarMappings.put(8, R.drawable.robo_8);
+        avatarMappings.put(9, R.drawable.robo_9);
+
         resetGameUsers();
     }
 
@@ -63,6 +83,22 @@ public class MainApplication extends Application {
         } else {
             throw new TypeNotPresentException("type not found", new Exception());
         }
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public int getAvatarId() {
+        return avatarId;
+    }
+
+    public void setAvatarId(int avatarId) {
+        this.avatarId = avatarId;
     }
 
     public static SharedPreferences getSharedPreferences() {
