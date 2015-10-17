@@ -12,7 +12,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="26dp"
-        android:text="Position"
+        android:text="Position 0/5"
         android:textColor="@android:color/white" />
 
     <TextView

@@ -29,11 +29,10 @@ import com.housing.typeracer.fragments.BaseFragment;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -67,6 +66,7 @@ public class GameFragment extends BaseFragment implements TextWatcher {
     private long hostEndTime;
     private long clientEndTime;
     private Map<String, Integer> wpmMap;
+    TextView position;
 
 
     public static GameFragment newInstance() {
@@ -101,6 +101,7 @@ public class GameFragment extends BaseFragment implements TextWatcher {
                     + " [Value] : " + entry.getValue());
         }
     }
+
     private void printMap(Map mp) {
         Iterator it = mp.entrySet().iterator();
         while (it.hasNext()) {
@@ -109,6 +110,7 @@ public class GameFragment extends BaseFragment implements TextWatcher {
             calculateClientWPM((Integer) pair.getValue());
         }
     }
+
     private static Map<String, Integer> sortByComparator(Map<String, Integer> unsortMap) {
 
         // Convert Map to List
@@ -160,7 +162,7 @@ public class GameFragment extends BaseFragment implements TextWatcher {
 
     private Map<String, Integer> getPlayersPosition() {
         clientEndTime = System.currentTimeMillis();
-     //   printMap(MainApplication.USER_SCORE);
+        printMap(MainApplication.USER_SCORE);
         return MainApplication.USER_SCORE;
     }
 
@@ -187,6 +189,8 @@ public class GameFragment extends BaseFragment implements TextWatcher {
                        }
         );
         width = imageView.getMeasuredWidth();
+        position = (TextView) rootView.findViewById(R.id.position);
+        position.setText("Position " + 0 + "/" + VALUES);
         input.addTextChangedListener(this);
         text = para.getText().toString();
         scrollView.setOnTouchListener(new View.OnTouchListener() {
@@ -247,8 +251,8 @@ public class GameFragment extends BaseFragment implements TextWatcher {
 
     private void updateProgressBar() {
         map = getPlayersPosition();
-
-        Log.i("ankitt", String.valueOf(keys.size()));
+        int pos = new ArrayList<String>(keys).indexOf(myDeviceId);
+        position.setText("Position " + pos + "/" + VALUES);
 
         printMap1(map);
         int i = 0;
@@ -266,6 +270,7 @@ public class GameFragment extends BaseFragment implements TextWatcher {
 
                 //   IMGS[i].setBackground(getResources().getDrawable(R.drawable.pink));
             }
+            i++;
             /*}*/
         }
 
