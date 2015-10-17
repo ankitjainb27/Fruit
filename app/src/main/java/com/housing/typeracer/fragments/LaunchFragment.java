@@ -83,8 +83,10 @@ public class LaunchFragment extends BaseFragment implements View.OnClickListener
             case R.id.wifi_connect:
                 openSettings();
                 break;
+
         }
     }
+
 
     private void openSettings() {
         ((MainActivity) getActivityReference()).openWifiSettings();

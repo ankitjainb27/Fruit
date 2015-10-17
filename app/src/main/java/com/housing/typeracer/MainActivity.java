@@ -220,7 +220,6 @@ public class MainActivity extends AppCompatActivity implements
                 if (obj instanceof HashMap) {
                     Map<String, String> userName = (HashMap<String, String>) obj;
                     showToastToUser(userName);
-
                     MainApplication.USER_NAME.putAll(userName);
                     for (String key : userName.keySet()) {
                         MainApplication.USER_SCORE.put(key, 0);
@@ -274,11 +273,19 @@ public class MainActivity extends AppCompatActivity implements
 
     private void updateUsersScore(Map<String, Integer> data) {
         for (String key : data.keySet()) {
+            printMap1(data);
             int oldScore = MainApplication.USER_SCORE.get(key);
             int newScore = data.get(key);
             if (oldScore < newScore) {
                 MainApplication.USER_SCORE.put(key, newScore);
             }
+        }
+    }
+
+    public static void printMap1(Map<String, Integer> map) {
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            System.out.println("[Key] : " + entry.getKey()
+                    + " [Value] : " + entry.getValue());
         }
     }
 

@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.housing.typeracer.MainApplication;
 import com.housing.typeracer.R;
 import com.housing.typeracer.models.Client;
 
@@ -39,6 +40,10 @@ public class ChooseClientRecyclerAdapter extends RecyclerView.Adapter<ChooseClie
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         String name = dataSet.get(position).getRemoteEndpointName();
+        String actualName = MainApplication.USER_NAME.get(name);
+        if (actualName != null) {
+            name = actualName;
+        }
         holder.clientName.setText(name);
         int color = generator.getColor(name);
         holder.textDrawable.setImageDrawable(builder.build(name.substring(0, 1), color));

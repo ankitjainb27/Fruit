@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -55,18 +56,22 @@ public class GameFragment extends BaseFragment implements TextWatcher, View.OnCl
     RelativeLayout progressImages;
     int progressMy = 0;
     Thread t;
-    RelativeLayout.LayoutParams lp;
+    RelativeLayout.LayoutParams lp, lp1;
     int width;
     private GoogleApiClient mGoogleApiClient;
     private List<String> deviceRemoteIds;
     Map<String, Integer> map;
     Set<String> keys;
+    ProgressBar progressBar;
 
     private boolean startCalled = false;
     private long startTime;
     private long hostEndTime;
     private long clientEndTime;
 
+    private Map<String, Integer> wpmMap;
+    TextView position;
+    ImageView profile;
     private TextView exit;
 
 
@@ -190,9 +195,11 @@ public class GameFragment extends BaseFragment implements TextWatcher, View.OnCl
         exit = (TextView) rootView.findViewById(R.id.exit);
         exit.setOnClickListener(this);
         ((MainActivity) getActivityReference()).hideToolbar();
+        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar2);
         para = (TextView) rootView.findViewById(R.id.tvPara);
         input = (EditText) rootView.findViewById(R.id.etInput);
         scrollView = (ScrollView) rootView.findViewById(R.id.scrollView);
+        profile = (ImageView) rootView.findViewById(R.id.profile);
         final ImageView imageView = (ImageView) rootView.findViewById(R.id.image_view);
         imageView.post(new Runnable() {
                            public void run() {
@@ -201,6 +208,8 @@ public class GameFragment extends BaseFragment implements TextWatcher, View.OnCl
                        }
         );
         width = imageView.getMeasuredWidth();
+        position = (TextView) rootView.findViewById(R.id.position);
+        position.setText("Position " + 0 + "/" + VALUES);
         input.addTextChangedListener(this);
         text = para.getText().toString();
         scrollView.setOnTouchListener(new View.OnTouchListener() {
@@ -210,12 +219,23 @@ public class GameFragment extends BaseFragment implements TextWatcher, View.OnCl
             }
         });
         input.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-        progressImages = (RelativeLayout) rootView.findViewById(R.id.progress_images);
         IMGS = new ImageView[VALUES];
+        if (VALUES == 2) {
+            IMGS[0] = (ImageView) rootView.findViewById(R.id.image_view1);
+            IMGS[1] = (ImageView) rootView.findViewById(R.id.image_view2);
+        } else if (VALUES == 3) {
+            IMGS[0] = (ImageView) rootView.findViewById(R.id.image_view1);
+            IMGS[1] = (ImageView) rootView.findViewById(R.id.image_view2);
+            IMGS[2] = (ImageView) rootView.findViewById(R.id.image_view3);
+        }
+
+
         lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, dpToPx(6));
-        for (int i = 0; i < VALUES; i++) {
+        lp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+       /* for (int i = 0; i < VALUES; i++) {
             IMGS[i] = (ImageView) progressImages.getChildAt(0);
         }
+       */
         para.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -261,27 +281,38 @@ public class GameFragment extends BaseFragment implements TextWatcher, View.OnCl
 
     private void updateProgressBar() {
         map = getPlayersPosition();
-
-        Log.i("ankitt", String.valueOf(keys.size()));
+        int pos = new ArrayList<String>(keys).indexOf(myDeviceId);
+        position.setText("Position " + pos + "/" + VALUES);
 
         printMap1(map);
-        int i = 0;
+        for (int i = 0; i < VALUES; i++) {
+            width = (width * map.get(new ArrayList<>(keys).get(i))) / text.length();
+            progressBar.setProgress(width);
+
+        }
+        /*
         for (String key : keys) {
             lp.width = (width * map.get(key)) / text.length();
             Log.i("width", String.valueOf(lp.width));
             IMGS[i].setLayoutParams(lp);
-            if (i == 0) {
+            if (lp.width < (width - dpToPx(16))) {
+                lp1.setMargins(dpToPx(16) + lp.width, dpToPx(30), 0, 0);
+                profile.setLayoutParams(lp1);
+            }
+            i++;
+        */   /* if (i == 0) {
                 IMGS[i].setImageResource(R.drawable.green);
-              /*  IMGS[i].setImageDrawable(getResources().getDrawable(R.drawable.green));
-              */  // IMGS[i].setBackground(getResources().getDrawable(R.drawable.green));
+              *//*  IMGS[i].setImageDrawable(getResources().getDrawable(R.drawable.green));
+              *//*  // IMGS[i].setBackground(getResources().getDrawable(R.drawable.green));
             } else if (i == 1) {
                 IMGS[i].setImageResource(R.drawable.pink);
                 //     IMGS[i].setImageDrawable(getResources().getDrawable(R.drawable.pink));
 
                 //   IMGS[i].setBackground(getResources().getDrawable(R.drawable.pink));
             }
+           */
             /*}*/
-        }
+    }
 
       /*  for (int i = 0; i < VALUES; i++) {
       *//*  for (String key : keys) {
@@ -311,7 +342,7 @@ public class GameFragment extends BaseFragment implements TextWatcher, View.OnCl
             //  IMGS[i].setBackground();
         }
     */
-    }
+
 
     private String getKey(Integer value) {
         for (String key : map.keySet()) {
@@ -323,9 +354,12 @@ public class GameFragment extends BaseFragment implements TextWatcher, View.OnCl
     }
 
     private int dpToPx(int dp) {
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        DisplayMetrics displayMetrics = getActivityReference().getResources().getDisplayMetrics();
+        return (int) ((dp * displayMetrics.density) + 0.5);
+       /* DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
         return px;
+   */
     }
 
 
