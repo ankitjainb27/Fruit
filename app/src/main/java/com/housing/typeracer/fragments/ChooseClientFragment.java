@@ -74,6 +74,8 @@ public class ChooseClientFragment extends BaseFragment implements View.OnClickLi
         rootView.findViewById(R.id.start_game_button).setOnClickListener(this);
         rootView.findViewById(R.id.dismiss_game_button).setOnClickListener(this);
         RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
+        noClients = (RelativeLayout) rootView.findViewById(R.id.rl_no_client);
+        recyclerHolder = (RelativeLayout) rootView.findViewById(R.id.rl_recycler_content);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivityReference()));
         mAdapter = new ChooseClientRecyclerAdapter(myDataset);
