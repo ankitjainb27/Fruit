@@ -25,6 +25,20 @@
         android:text="Exit"
         android:textColor="@android:color/white" />
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:layout_below="@id/position"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_toEndOf="@+id/profile"
+        android:layout_toRightOf="@+id/profile"
+        android:background="@android:color/holo_red_light"
+        android:indeterminate="false"
+        android:progress="40" />
+
     <ImageView
         android:id="@+id/image_view"
         android:layout_width="match_parent"
@@ -35,48 +49,74 @@
         android:layout_marginTop="73dp"
         android:background="@drawable/light_blue" />
 
-    <RelativeLayout
-        android:id="@+id/progress_images"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ImageView
+        android:id="@+id/image_view1"
+        android:layout_width="0dp"
+        android:layout_height="6dp"
         android:layout_below="@id/position"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="73dp">
-
-        <ImageView
-            android:id="@+id/image_view1"
-            android:layout_width="0dp"
-            android:layout_height="6dp"
-            android:background="@drawable/yellow" />
-
-        <ImageView
-            android:id="@+id/image_view2"
-            android:layout_width="0dp"
-            android:layout_height="6dp"
-            android:background="@drawable/green" />
-
-        <ImageView
-            android:id="@+id/image_view3"
-            android:layout_width="0dp"
-            android:layout_height="6dp"
-            android:background="@drawable/pink" />
-
-        <ImageView
-            android:id="@+id/image_view4"
-            android:layout_width="0dp"
-            android:layout_height="6dp"
-            android:background="@drawable/sky" />
-    </RelativeLayout>
+        android:layout_marginTop="73dp"
+        android:background="@drawable/yellow" />
 
     <ImageView
+
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:layout_below="@+id/image_view1"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/light_blue" />
+
+    <ImageView
+        android:id="@+id/image_view2"
+        android:layout_width="0dp"
+        android:layout_height="6dp"
+        android:layout_below="@+id/image_view1"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/green" />
+
+    <ImageView
+
+        android:id="@+id/imageView2"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:layout_below="@+id/image_view2"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/light_blue" />
+
+    <ImageView
+        android:id="@+id/image_view3"
+        android:layout_width="0dp"
+        android:layout_height="6dp"
+        android:layout_below="@+id/image_view2"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/pink" />
+    <!--
+
+            <ImageView
+                android:id="@+id/image_view4"
+                android:layout_width="0dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_height="6dp"
+                android:background="@drawable/sky" />
+    -->
+
+
+    <ImageView
+        android:id="@+id/profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/position"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="30dp"
-        android:src="@drawable/check" />
+        android:src="@drawable/check"
+        android:visibility="gone" />
 
     <EditText
         android:id="@+id/etInput"
@@ -148,4 +188,16 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:background="@android:color/white" />
+
+    <ProgressBar
+        android:id="@+id/progressBar2"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/progressBar"
+        android:progress="20"
+        android:layout_alignRight="@+id/progressBar"
+        android:layout_alignTop="@+id/position" />
+
+
 </RelativeLayout>
