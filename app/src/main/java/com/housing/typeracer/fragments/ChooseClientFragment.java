@@ -82,10 +82,10 @@ public class ChooseClientFragment extends BaseFragment implements View.OnClickLi
         mAdapter = new ChooseClientRecyclerAdapter(myDataset);
         mRecyclerView.setAdapter(mAdapter);
         MainApplication.resetGameUsers();
-        addToGameUsers(myDeviceId, MainApplication.getSharedPreferences().getString(Constants.USER_NAME, "Host"), myRemoteId);
+        addToGameUsers(myDeviceId, MainApplication.getSharedPreferences().getString(MainApplication.username_key, "Host"), myRemoteId);
 
-        ((TextView) rootView.findViewById(R.id.games_name)).setText(MainApplication.getSharedPreferences().getString(Constants.USER_NAME, "Host") + "'s Game");
-        ((TextView) rootView.findViewById(R.id.games_name_init)).setText(MainApplication.getSharedPreferences().getString(Constants.USER_NAME, "Host") + "'s Game Created");
+        ((TextView) rootView.findViewById(R.id.games_name)).setText(MainApplication.getSharedPreferences().getString(MainApplication.username_key, "Host") + "'s Game");
+        ((TextView) rootView.findViewById(R.id.games_name_init)).setText(MainApplication.getSharedPreferences().getString(MainApplication.username_key, "Host") + "'s Game Created");
     }
 
     public void newClientFound(String remoteEndpointId, String remoteDeviceId, String remoteEndpointName, byte[] payload) {

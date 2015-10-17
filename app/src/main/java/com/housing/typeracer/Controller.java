@@ -29,7 +29,7 @@ public interface Controller {
 
     void popBackStack();
 
-    void clearBackStack(boolean isInclusive);
+    void clearBackStack(boolean isInclusive, String tag);
 
     int getStatusBarHeight();
 }

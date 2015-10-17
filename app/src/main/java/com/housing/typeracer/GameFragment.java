@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.nearby.Nearby;
 import com.housing.typeracer.fragments.BaseFragment;
+import com.housing.typeracer.fragments.LaunchFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,7 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class GameFragment extends BaseFragment implements TextWatcher {
+public class GameFragment extends BaseFragment implements TextWatcher, View.OnClickListener {
 
     private String myDeviceId;
     TextView para;
@@ -70,6 +71,7 @@ public class GameFragment extends BaseFragment implements TextWatcher {
     private Map<String, Integer> wpmMap;
     TextView position;
     ImageView profile;
+    private TextView exit;
 
 
     public static GameFragment newInstance() {
@@ -180,6 +182,8 @@ public class GameFragment extends BaseFragment implements TextWatcher {
     }
 
     private void initViews(View rootView) {
+        exit = (TextView) rootView.findViewById(R.id.exit);
+        exit.setOnClickListener(this);
         ((MainActivity) getActivityReference()).hideToolbar();
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar2);
         para = (TextView) rootView.findViewById(R.id.tvPara);
@@ -511,5 +515,16 @@ public class GameFragment extends BaseFragment implements TextWatcher {
     @Override
     public void afterTextChanged(Editable s) {
     }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.exit:
+                getFragmentController().clearBackStack(false, LaunchFragment.class.getCanonicalName());
+                break;
+        }
+    }
+
+
 }
 
