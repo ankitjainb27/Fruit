@@ -285,6 +285,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+
     private String getDeviceIdFromEndpoint(String endpoint) {
         for (String key : MainApplication.USER_REMOTE_ENDPOINT.keySet()) {
             if (null != (MainApplication.USER_REMOTE_ENDPOINT.get(key)) && (MainApplication.USER_REMOTE_ENDPOINT.get(key)).equalsIgnoreCase(endpoint)) {

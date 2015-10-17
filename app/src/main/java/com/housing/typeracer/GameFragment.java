@@ -27,10 +27,16 @@ import com.google.android.gms.nearby.Nearby;
 import com.housing.typeracer.fragments.BaseFragment;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class GameFragment extends BaseFragment implements TextWatcher {
 
@@ -45,15 +51,23 @@ public class GameFragment extends BaseFragment implements TextWatcher {
     ScrollView scrollView;
     List<Integer> list = new ArrayList<>();
     ImageView[] IMGS;
-    public static int VALUES;
+    public static int VALUES = 0;
     RelativeLayout progressImages;
+    int progressMy = 0;
+    Thread t;
+    RelativeLayout.LayoutParams lp;
+    int width;
     private GoogleApiClient mGoogleApiClient;
     private List<String> deviceRemoteIds;
+    Map<String, Integer> map;
+    Set<String> keys;
+
     private boolean startCalled = false;
     private long startTime;
     private long hostEndTime;
     private long clientEndTime;
     private Map<String, Integer> wpmMap;
+
 
     public static GameFragment newInstance() {
         return new GameFragment();
@@ -72,6 +86,50 @@ public class GameFragment extends BaseFragment implements TextWatcher {
                 deviceRemoteIds.add(MainApplication.USER_REMOTE_ENDPOINT.get(key));
             }
         }
+        map = getPlayersPosition();
+        keys = map.keySet();
+        map = sortByComparator(map);
+        VALUES = map.size();
+        Log.i("ankitv", String.valueOf(VALUES));
+        // printMap(map);
+
+    }
+
+    public static void printMap1(Map<String, Integer> map) {
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            System.out.println("[Key] : " + entry.getKey()
+                    + " [Value] : " + entry.getValue());
+        }
+    }
+    private void printMap(Map mp) {
+        Iterator it = mp.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry) it.next();
+            Log.v("map -", " " + pair.getKey() + " = " + pair.getValue());
+            calculateClientWPM((Integer) pair.getValue());
+        }
+    }
+    private static Map<String, Integer> sortByComparator(Map<String, Integer> unsortMap) {
+
+        // Convert Map to List
+        List<Map.Entry<String, Integer>> list =
+                new LinkedList<Map.Entry<String, Integer>>(unsortMap.entrySet());
+
+        // Sort list with comparator, to compare the Map values
+        Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
+            public int compare(Map.Entry<String, Integer> o1,
+                               Map.Entry<String, Integer> o2) {
+                return (o1.getValue()).compareTo(o2.getValue());
+            }
+        });
+
+        // Convert sorted map back to a Map
+        Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
+        for (Iterator<Map.Entry<String, Integer>> it = list.iterator(); it.hasNext(); ) {
+            Map.Entry<String, Integer> entry = it.next();
+            sortedMap.put(entry.getKey(), entry.getValue());
+        }
+        return sortedMap;
     }
 
     private void pushMyPosition(int pos) {
@@ -88,28 +146,29 @@ public class GameFragment extends BaseFragment implements TextWatcher {
                 byte[] data = Serializer.serialize(MainApplication.USER_SCORE);
                 Nearby.Connections.sendUnreliableMessage(mGoogleApiClient, deviceRemoteIds, data);
             } catch (Exception p) {
+                p.printStackTrace();
             }
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        t.interrupt();
+
+    }
+
     private Map<String, Integer> getPlayersPosition() {
         clientEndTime = System.currentTimeMillis();
-        printMap(MainApplication.USER_SCORE);
+     //   printMap(MainApplication.USER_SCORE);
         return MainApplication.USER_SCORE;
     }
 
-    private void printMap(Map mp) {
-        Iterator it = mp.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry) it.next();
-            Log.v("map -", " " + pair.getKey() + " = " + pair.getValue());
-            calculateClientWPM((Integer) pair.getValue());
-        }
-    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         View rootView = inflater.inflate(R.layout.game, container, false);
         initViews(rootView);
         return rootView;
@@ -120,6 +179,14 @@ public class GameFragment extends BaseFragment implements TextWatcher {
         para = (TextView) rootView.findViewById(R.id.tvPara);
         input = (EditText) rootView.findViewById(R.id.etInput);
         scrollView = (ScrollView) rootView.findViewById(R.id.scrollView);
+        final ImageView imageView = (ImageView) rootView.findViewById(R.id.image_view);
+        imageView.post(new Runnable() {
+                           public void run() {
+                               width = imageView.getMeasuredWidth();
+                           }
+                       }
+        );
+        width = imageView.getMeasuredWidth();
         input.addTextChangedListener(this);
         text = para.getText().toString();
         scrollView.setOnTouchListener(new View.OnTouchListener() {
@@ -131,11 +198,9 @@ public class GameFragment extends BaseFragment implements TextWatcher {
         input.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         progressImages = (RelativeLayout) rootView.findViewById(R.id.progress_images);
         IMGS = new ImageView[VALUES];
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, dpToPx(6));
+        lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, dpToPx(6));
         for (int i = 0; i < VALUES; i++) {
             IMGS[i] = (ImageView) progressImages.getChildAt(0);
-            lp.width = 50 * (i + 1);
-            IMGS[i].setLayoutParams(lp);
         }
         para.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -148,7 +213,6 @@ public class GameFragment extends BaseFragment implements TextWatcher {
                 // the width of the line
                 for (int i = 0; i < layout.getLineCount() - 1; i++) {
                     int end = layout.getLineEnd(i);
-                    Log.i("ankitp", String.valueOf(end));
                     list.add(end);
                 }
             }
@@ -158,9 +222,91 @@ public class GameFragment extends BaseFragment implements TextWatcher {
                 = new SpannableString(text);
         styledString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.blue)), 0, afterIndex(counterText), 0);
         para.setText(styledString);
+        t = new Thread() {
 
+            @Override
+            public void run() {
+                try {
+                    while (!isInterrupted()) {
+                        Thread.sleep(2000);
+                        getActivityReference().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                pushMyPosition(progressMy);
+                                updateProgressBar();
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {
+                }
+            }
+        };
+        t.start();
     }
 
+
+    private void updateProgressBar() {
+        map = getPlayersPosition();
+
+        Log.i("ankitt", String.valueOf(keys.size()));
+
+        printMap1(map);
+        int i = 0;
+        for (String key : keys) {
+            lp.width = (width * map.get(key)) / text.length();
+            Log.i("width", String.valueOf(lp.width));
+            IMGS[i].setLayoutParams(lp);
+            if (i == 0) {
+                IMGS[i].setImageResource(R.drawable.green);
+              /*  IMGS[i].setImageDrawable(getResources().getDrawable(R.drawable.green));
+              */  // IMGS[i].setBackground(getResources().getDrawable(R.drawable.green));
+            } else if (i == 1) {
+                IMGS[i].setImageResource(R.drawable.pink);
+                //     IMGS[i].setImageDrawable(getResources().getDrawable(R.drawable.pink));
+
+                //   IMGS[i].setBackground(getResources().getDrawable(R.drawable.pink));
+            }
+            /*}*/
+        }
+
+      /*  for (int i = 0; i < VALUES; i++) {
+      *//*  for (String key : keys) {
+      *//*      *//*if (i < VALUES) {
+            *//*
+            lp.width = (width * map.get(new ArrayList<>(keys).get(i))) / text.length();
+            Log.i("width", String.valueOf(lp.width));
+            IMGS[i].setLayoutParams(lp);
+            if (i == 0) {
+                IMGS[i].setImageResource(R.drawable.green);
+              *//*  IMGS[i].setImageDrawable(getResources().getDrawable(R.drawable.green));
+              *//*  // IMGS[i].setBackground(getResources().getDrawable(R.drawable.green));
+            } else if (i == 1) {
+                IMGS[i].setImageResource(R.drawable.pink);
+                //     IMGS[i].setImageDrawable(getResources().getDrawable(R.drawable.pink));
+
+                //   IMGS[i].setBackground(getResources().getDrawable(R.drawable.pink));
+            }
+            *//*}*//*
+        }
+      *//*  for (int i = 0; i < VALUES; i++) {
+
+            lp.width = (width * map.get(keys.)) / text.length();
+            Log.i("width", String.valueOf(lp.width));
+            IMGS[i].setLayoutParams(lp);
+
+            //  IMGS[i].setBackground();
+        }
+    */
+    }
+
+    private String getKey(Integer value) {
+        for (String key : map.keySet()) {
+            if (map.get(key).equals(value)) {
+                return key; //return the first found
+            }
+        }
+        return null;
+    }
 
     private int dpToPx(int dp) {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
@@ -198,11 +344,12 @@ public class GameFragment extends BaseFragment implements TextWatcher {
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        Log.i("ankit_ON_start", String.valueOf(start));
+     /*   Log.i("ankit_ON_start", String.valueOf(start));
         Log.i("ankit_ON_count", String.valueOf(count));
         Log.i("ankit_ON_before", String.valueOf(before));
         Log.i("ankit_ON_S", s.toString());
         Log.i("ankit_ON_counter", String.valueOf(counterText));
+*/
 
         if (!startCalled) {
             startTime = System.currentTimeMillis();
@@ -221,6 +368,7 @@ public class GameFragment extends BaseFragment implements TextWatcher {
                             input.setText((input.getText().toString()).replace(" ", ""));
                         }
                     } else {
+                        progressMy++;
                         if ((Character.toString(s.charAt(start))).equals(" ")) {
                             // Log.i("ankitu", String.valueOf(progressStatus));
                             input.setText("");
@@ -238,6 +386,8 @@ public class GameFragment extends BaseFragment implements TextWatcher {
                     }
                 } else {
                     input.setText("");
+                    progressMy++;
+
                     hostEndTime = System.currentTimeMillis();
                     calculateHostWPM();
                 }
@@ -305,11 +455,11 @@ public class GameFragment extends BaseFragment implements TextWatcher {
 
     private int afterIndex(int counterText) {
         int afterIndex = counterText;
-        Log.i("ankitc", String.valueOf(counterText));
+        //  Log.i("ankitc", String.valueOf(counterText));
         if (counterText < text.length()) {
             if (!Character.toString(text.charAt(counterText)).equals(" ")) {
                 for (int i = counterText; i < text.length(); i++) {
-                    Log.i("ankitc", String.valueOf(i));
+                    //       Log.i("ankitc", String.valueOf(i));
                     if (Character.toString(text.charAt(i)).equals(" ")) {
                         afterIndex = i;
                         break;
@@ -328,3 +478,4 @@ public class GameFragment extends BaseFragment implements TextWatcher {
     public void afterTextChanged(Editable s) {
     }
 }
+
