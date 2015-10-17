@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,6 +80,18 @@ public class MainActivity extends AppCompatActivity implements
         toolbar.setTitleTextAppearance(this, R.style.toolBarTitleStyle);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        setGravity(toolbar.getChildAt(0));
+    }
+
+    private void setGravity(View viewInToolBar) {
+        if (viewInToolBar != null) {
+            Toolbar.LayoutParams viewInToolBarLayoutParams = (Toolbar.LayoutParams) viewInToolBar
+                    .getLayoutParams();
+            if (viewInToolBarLayoutParams != null) {
+                viewInToolBarLayoutParams.gravity = Gravity.CENTER_VERTICAL;
+                viewInToolBar.setLayoutParams(viewInToolBarLayoutParams);
+            }
+        }
     }
 
     @Override
