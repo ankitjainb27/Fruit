@@ -35,6 +35,7 @@ public class ChooseClientFragment extends BaseFragment implements View.OnClickLi
     private Button startGameButton;
     private GoogleApiClient googleApiClient;
     private String myDeviceId;
+    private String myRemoteId;
 
     public static ChooseClientFragment newInstance() {
         return new ChooseClientFragment();
@@ -46,6 +47,7 @@ public class ChooseClientFragment extends BaseFragment implements View.OnClickLi
         myDataset = new ArrayList<>();
         googleApiClient = ((MainActivity) getActivityReference()).mGoogleApiClient;
         myDeviceId = Nearby.Connections.getLocalDeviceId(googleApiClient);
+        myRemoteId = Nearby.Connections.getLocalEndpointId(googleApiClient);
     }
 
     @Nullable
@@ -75,7 +77,7 @@ public class ChooseClientFragment extends BaseFragment implements View.OnClickLi
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivityReference()));
         mAdapter = new ChooseClientRecyclerAdapter(myDataset);
         mRecyclerView.setAdapter(mAdapter);
-        addToGameUsers(myDeviceId, MainApplication.getSharedPreferences().getString(Constants.USER_NAME, "host"));
+        addToGameUsers(myDeviceId, MainApplication.getSharedPreferences().getString(Constants.USER_NAME, "host"), myRemoteId);
         myDataset.add(new Client(Nearby.Connections.getLocalEndpointId(googleApiClient), myDeviceId, MainApplication.getSharedPreferences().getString(Constants.USER_NAME, "host"), null));
         mAdapter.notifyDataSetChanged();
     }
@@ -83,7 +85,7 @@ public class ChooseClientFragment extends BaseFragment implements View.OnClickLi
     public void newClientFound(String remoteEndpointId, String remoteDeviceId, String remoteEndpointName, byte[] payload) {
         myDataset.add(new Client(remoteEndpointId, remoteDeviceId, remoteEndpointName, payload));
         mAdapter.notifyDataSetChanged();
-        addToGameUsers(remoteDeviceId, remoteEndpointName);
+        addToGameUsers(remoteDeviceId, remoteEndpointName, remoteEndpointId);
         try {
             byte[] fileByteArray = Serializer.serialize(MainApplication.USER_NAME);
             for (String device :
@@ -108,9 +110,10 @@ public class ChooseClientFragment extends BaseFragment implements View.OnClickLi
 //        }
     }
 
-    private void addToGameUsers(String deviceId, String name) {
+    private void addToGameUsers(String deviceId, String name, String remoteEndPoint) {
         MainApplication.USER_NAME.put(deviceId, name);
         MainApplication.USER_SCORE.put(deviceId, 0);
+        MainApplication.USER_REMOTE_ENDPOINT.put(deviceId, remoteEndPoint);
     }
 
     @Override
