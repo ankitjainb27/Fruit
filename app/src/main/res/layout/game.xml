@@ -26,19 +26,51 @@
         android:text="Exit"
         android:textColor="@android:color/white" />
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyleLarge"
+    <LinearLayout
+        android:id="@+id/ll"
         android:layout_width="match_parent"
-        android:layout_height="6dp"
+        android:layout_height="wrap_content"
         android:layout_below="@id/position"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_toEndOf="@+id/profile"
-        android:layout_toRightOf="@+id/profile"
-        android:background="@android:color/holo_red_light"
-        android:indeterminate="false"
-        android:progress="40" />
+        android:orientation="vertical">
+
+        <ProgressBar
+            android:id="@+id/progressBar1"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible" />
+
+
+        <ProgressBar
+            android:id="@+id/progressBar2"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/progressBar3"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/progressBar4"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/progressBar5"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/image_view"
@@ -48,7 +80,8 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="73dp"
-        android:background="@drawable/light_blue" />
+        android:background="@drawable/light_blue"
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/image_view1"
@@ -58,7 +91,8 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="73dp"
-        android:background="@drawable/yellow" />
+        android:background="@drawable/yellow"
+        android:visibility="gone" />
 
     <ImageView
 
@@ -67,7 +101,8 @@
         android:layout_below="@+id/image_view1"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:background="@drawable/light_blue" />
+        android:background="@drawable/light_blue"
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/image_view2"
@@ -76,7 +111,8 @@
         android:layout_below="@+id/image_view1"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:background="@drawable/green" />
+        android:background="@drawable/green"
+        android:visibility="gone" />
 
     <ImageView
 
@@ -86,7 +122,8 @@
         android:layout_below="@+id/image_view2"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:background="@drawable/light_blue" />
+        android:background="@drawable/light_blue"
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/image_view3"
@@ -95,7 +132,8 @@
         android:layout_below="@+id/image_view2"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:background="@drawable/pink" />
+        android:background="@drawable/pink"
+        android:visibility="gone" />
     <!--
 
             <ImageView
@@ -189,16 +227,6 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:background="@android:color/white" />
-
-    <ProgressBar
-        android:id="@+id/progressBar2"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/progressBar"
-        android:progress="20"
-        android:layout_alignRight="@+id/progressBar"
-        android:layout_alignTop="@+id/position" />
 
 
 </RelativeLayout>
