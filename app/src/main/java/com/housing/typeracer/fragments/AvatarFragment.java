@@ -69,8 +69,12 @@ public class AvatarFragment extends BaseFragment implements View.OnClickListener
             MainApplication.showToast("Yo! Choose a cool avatar!");
             return;
         }
-        MainApplication.putInSharedPref(MainApplication.prof_key, true);
         selectedUserName = userName;
+        MainApplication.putInSharedPref(MainApplication.prof_key, true);
+        MainApplication.putInSharedPref(MainApplication.username_key, selectedUserName);
+        MainApplication.putInSharedPref(MainApplication.useravatar_key, selectedAvatar + 1);
+        ((MainApplication) getActivityReference().getApplication()).setUserName(selectedUserName);
+        ((MainApplication) getActivityReference().getApplication()).setAvatarId(selectedAvatar + 1);
         avatarSelected = false;
         getFragmentController().performOperation(Controller.OPEN_LAUNCH_FRAGMENT, null);
     }

@@ -90,7 +90,21 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void initLaunchFragment() {
-        replaceFragmentInDefaultLayout(GetStartedFragment.newInstance());
+        if (MainApplication.getSharedPreferences().contains(MainApplication.prof_key)) {
+            boolean isProfilePresent = MainApplication.getSharedPreferences().getBoolean(MainApplication.prof_key, false);
+            if (isProfilePresent) {
+                String userName = MainApplication.getSharedPreferences().getString(MainApplication.username_key, "Anon");
+                int avatarId = MainApplication.getSharedPreferences().getInt(MainApplication.useravatar_key, 100);
+                ((MainApplication) getApplication()).setUserName(userName);
+                ((MainApplication) getApplication()).setAvatarId(avatarId);
+                replaceFragmentInDefaultLayout(LaunchFragment.newInstance());
+            } else {
+                replaceFragmentInDefaultLayout(GetStartedFragment.newInstance());
+            }
+        } else {
+            replaceFragmentInDefaultLayout(GetStartedFragment.newInstance());
+        }
+
     }
 
     @Override
@@ -177,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements
                                 }
                             }
                         } else {
-                            Log.d("ERROR", status.getStatusMessage());
+                            Log.d("ERROR", "connection failed");
                             MainApplication.showToast("Connection to " + endpointId + " failed");
                             if (!MainApplication.mIsHost) {
                                 mIsConnected = false;
