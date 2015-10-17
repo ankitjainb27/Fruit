@@ -4,22 +4,83 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/my_recycler_view"
+    <RelativeLayout
+        android:id="@+id/rl_recycler_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/start_game_button"
-        android:scrollbars="vertical" />
+        android:layout_alignParentTop="true"
+        android:visibility="gone">
 
-    <Button
-        android:id="@+id/start_game_button"
+        <com.housing.typeracer.fonts.TextBold
+            android:id="@+id/games_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/padding_v_large"
+            android:textSize="@dimen/abc_text_size_headline_material" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/my_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/start_game_button"
+            android:scrollbars="vertical" />
+
+        <Button
+            android:id="@+id/start_game_button"
+            style="@style/greenButtonStyle"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:text="start game"
+            android:textAllCaps="true"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_no_client"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:enabled="false"
-        android:gravity="center"
-        android:text="start the game"
-        android:textAllCaps="true"
-        android:textSize="20sp" />
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:background="@color/white">
+
+        <com.housing.typeracer.fonts.TextRegular
+            android:id="@+id/games_name_init"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_margin="@dimen/padding_v_large"
+            android:gravity="center"
+            android:text="Game Created"
+            android:textColor="@color/primary"
+            android:textSize="24sp" />
+
+        <ImageView
+            android:id="@+id/placeholder_happy_guy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/games_name_init"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/padding_huge"
+            android:src="@drawable/text_dude_happy" />
+
+        <com.housing.typeracer.fonts.TextLight
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/placeholder_happy_guy"
+            android:gravity="center"
+            android:text="@string/waiting_for_others"
+            android:textColor="@color/color_676777"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/dismiss_game_button"
+            style="@style/greenButtonStyle"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:text="dismiss"
+            android:textAllCaps="true"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

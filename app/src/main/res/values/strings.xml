@@ -10,8 +10,9 @@
   -->
     <string name="service_id">com.housing.typeracer.serviceid</string>
     <string name="not_connected_to_network">Please connect to a WiFi network first</string>
-    <string name="advertising_now">You are advertising now.</string>
+    <string name="advertising_now">You are hosting now.</string>
     <string name="something_went_wrong">Something went wrong</string>
     <string name="already_hosting">You are already a host</string>
+    <string name="waiting_for_others">Waiting for others to join in...</string>
     ...
 </resources>
