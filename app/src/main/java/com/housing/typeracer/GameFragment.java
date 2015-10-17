@@ -39,8 +39,12 @@ public class GameFragment extends BaseFragment implements TextWatcher {
     ScrollView scrollView;
     List<Integer> list = new ArrayList<>();
     ImageView[] IMGS;
-    public static int VALUES;
+    public static int VALUES = 3;
     RelativeLayout progressImages;
+    int progressMy = 0;
+    Thread t;
+    RelativeLayout.LayoutParams lp;
+    int width;
 
 
     public static GameFragment newInstance() {
@@ -53,10 +57,17 @@ public class GameFragment extends BaseFragment implements TextWatcher {
         super.onCreate(savedInstanceState);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        t.interrupt();
+
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         View rootView = inflater.inflate(R.layout.game, container, false);
         initViews(rootView);
         return rootView;
@@ -67,6 +78,16 @@ public class GameFragment extends BaseFragment implements TextWatcher {
         para = (TextView) rootView.findViewById(R.id.tvPara);
         input = (EditText) rootView.findViewById(R.id.etInput);
         scrollView = (ScrollView) rootView.findViewById(R.id.scrollView);
+        final ImageView imageView = (ImageView) rootView.findViewById(R.id.image_view);
+        imageView.post(new Runnable() {
+                           public void run() {
+                               width = imageView.getMeasuredWidth();
+                               Log.i("width", String.valueOf(width));
+                           }
+                       }
+        );
+        width = imageView.getMeasuredWidth();
+
         input.addTextChangedListener(this);
         text = para.getText().toString();
         scrollView.setOnTouchListener(new View.OnTouchListener() {
@@ -78,11 +99,9 @@ public class GameFragment extends BaseFragment implements TextWatcher {
         input.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         progressImages = (RelativeLayout) rootView.findViewById(R.id.progress_images);
         IMGS = new ImageView[VALUES];
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, dpToPx(6));
+        lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, dpToPx(6));
         for (int i = 0; i < VALUES; i++) {
             IMGS[i] = (ImageView) progressImages.getChildAt(0);
-            lp.width = 50 * (i + 1);
-            IMGS[i].setLayoutParams(lp);
         }
         para.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -105,7 +124,34 @@ public class GameFragment extends BaseFragment implements TextWatcher {
                 = new SpannableString(text);
         styledString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.blue)), 0, afterIndex(counterText), 0);
         para.setText(styledString);
+        t = new Thread() {
 
+            @Override
+            public void run() {
+                try {
+                    while (!isInterrupted()) {
+                        Thread.sleep(2000);
+                        getActivityReference().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                updateTextView();
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {
+                }
+            }
+        };
+
+        t.start();
+
+
+    }
+
+    private void updateTextView() {
+        lp.width = (width * progressMy) / para.length();
+        IMGS[0].setLayoutParams(lp);
+        // Toast.makeText(getActivityReference(), "now", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -150,6 +196,7 @@ public class GameFragment extends BaseFragment implements TextWatcher {
         Log.i("ankit_ON_before", String.valueOf(before));
         Log.i("ankit_ON_S", s.toString());
         Log.i("ankit_ON_counter", String.valueOf(counterText));
+
         if (count > before) {
             if (flag == 0) {
                 if (counterText + start < text.length()) {
@@ -163,6 +210,7 @@ public class GameFragment extends BaseFragment implements TextWatcher {
                             input.setText((input.getText().toString()).replace(" ", ""));
                         }
                     } else {
+                        progressMy++;
                         if ((Character.toString(s.charAt(start))).equals(" ")) {
                             // Log.i("ankitu", String.valueOf(progressStatus));
                             input.setText("");
@@ -180,6 +228,8 @@ public class GameFragment extends BaseFragment implements TextWatcher {
                     }
                 } else {
                     input.setText("");
+                    progressMy++;
+
                 }
             }
         } else if (count < before) {

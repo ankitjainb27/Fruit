@@ -26,6 +26,7 @@
         android:textColor="@android:color/white" />
 
     <ImageView
+        android:id="@+id/image_view"
         android:layout_width="match_parent"
         android:layout_height="6dp"
         android:layout_below="@id/position"
@@ -45,28 +46,26 @@
 
         <ImageView
             android:id="@+id/image_view1"
-            android:layout_width="200dp"
+            android:layout_width="0dp"
             android:layout_height="6dp"
-
-
             android:background="@drawable/yellow" />
 
         <ImageView
             android:id="@+id/image_view2"
-            android:layout_width="150dp"
+            android:layout_width="0dp"
             android:layout_height="6dp"
 
             android:background="@drawable/green" />
 
         <ImageView
             android:id="@+id/image_view3"
-            android:layout_width="100dp"
+            android:layout_width="0dp"
             android:layout_height="6dp"
             android:background="@drawable/pink" />
 
         <ImageView
             android:id="@+id/image_view4"
-            android:layout_width="50dp"
+            android:layout_width="0dp"
             android:layout_height="6dp"
             android:background="@drawable/sky" />
     </RelativeLayout>
