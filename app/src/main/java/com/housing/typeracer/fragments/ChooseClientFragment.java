@@ -81,6 +81,7 @@ public class ChooseClientFragment extends BaseFragment implements View.OnClickLi
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivityReference()));
         mAdapter = new ChooseClientRecyclerAdapter(myDataset);
         mRecyclerView.setAdapter(mAdapter);
+        MainApplication.resetGameUsers();
         addToGameUsers(myDeviceId, MainApplication.getSharedPreferences().getString(Constants.USER_NAME, "Host"), myRemoteId);
 
         ((TextView) rootView.findViewById(R.id.games_name)).setText(MainApplication.getSharedPreferences().getString(Constants.USER_NAME, "Host") + "'s Game");

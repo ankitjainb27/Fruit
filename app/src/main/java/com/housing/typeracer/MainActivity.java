@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public void connectToHost(final String deviceId, String endpointId, final String serviceId) {
         byte[] payload = null;
-        String name = "client1";
+        String name = null;
         Nearby.Connections.sendConnectionRequest(mGoogleApiClient, name,
                 endpointId, payload, new Connections.ConnectionResponseCallback() {
 
@@ -227,10 +227,10 @@ public class MainActivity extends AppCompatActivity implements
                 if (obj instanceof HashMap) {
                     Map<String, String> userName = (HashMap<String, String>) obj;
                     showToastToUser(userName);
+
                     MainApplication.USER_NAME.putAll(userName);
                     for (String key : userName.keySet()) {
                         MainApplication.USER_SCORE.put(key, 0);
-                        MainApplication.showToast("RELIABLE DATA : " + key);
                     }
                 } else if (obj instanceof String) {
                     String data = (String) obj;
