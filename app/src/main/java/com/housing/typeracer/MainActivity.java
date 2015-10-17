@@ -107,12 +107,12 @@ public class MainActivity extends AppCompatActivity implements
         if (MainApplication.getSharedPreferences().contains(MainApplication.prof_key)) {
             boolean isProfilePresent = MainApplication.getSharedPreferences().getBoolean(MainApplication.prof_key, false);
             if (isProfilePresent) {
-                replaceFragmentInDefaultLayout(LaunchFragment.newInstance());
+                replaceFragmentInDefaultLayout(LaunchFragment.newInstance(), true);
             } else {
-                replaceFragmentInDefaultLayout(GetStartedFragment.newInstance());
+                replaceFragmentInDefaultLayout(GetStartedFragment.newInstance(), true);
             }
         } else {
-            replaceFragmentInDefaultLayout(GetStartedFragment.newInstance());
+            replaceFragmentInDefaultLayout(GetStartedFragment.newInstance(), true);
         }
 
     }
@@ -345,11 +345,13 @@ public class MainActivity extends AppCompatActivity implements
                 });
     }
 
-    public void replaceFragmentInDefaultLayout(BaseFragment fragmentToBeLoaded) {
+    public void replaceFragmentInDefaultLayout(BaseFragment fragmentToBeLoaded, boolean addToBackStack) {
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.mainFrameLayout, fragmentToBeLoaded,
                 fragmentToBeLoaded.getName());
-        fragmentTransaction.addToBackStack(fragmentToBeLoaded.getName());
+        if (addToBackStack) {
+            fragmentTransaction.addToBackStack(fragmentToBeLoaded.getName());
+        }
         fragmentTransaction.commit();
 
     }
@@ -358,22 +360,22 @@ public class MainActivity extends AppCompatActivity implements
     public void performOperation(int operation, Object input) {
         switch (operation) {
             case OPEN_LAUNCH_FRAGMENT:
-                replaceFragmentInDefaultLayout(LaunchFragment.newInstance());
+                replaceFragmentInDefaultLayout(LaunchFragment.newInstance(), true);
                 break;
             case OPEN_CHOOSE_HOST_FRAGMENT:
-                replaceFragmentInDefaultLayout(ChooseHostFragment.newInstance());
+                replaceFragmentInDefaultLayout(ChooseHostFragment.newInstance(), false);
                 break;
             case OPEN_CHOOSE_CLIENT_FRAGMENT:
-                replaceFragmentInDefaultLayout(ChooseClientFragment.newInstance());
+                replaceFragmentInDefaultLayout(ChooseClientFragment.newInstance(), false);
                 break;
             case OPEN_AVATAR_SCREEN:
-                replaceFragmentInDefaultLayout(AvatarFragment.newInstance());
+                replaceFragmentInDefaultLayout(AvatarFragment.newInstance(), true);
                 break;
             case OPEN_GAME_FRAGMENT:
                 openGameScreen();
                 break;
             case OPEN_LEADERBOARD:
-                replaceFragmentInDefaultLayout(LeaderboardFragment.newInstance());
+                replaceFragmentInDefaultLayout(LeaderboardFragment.newInstance(), true);
                 break;
 
         }
@@ -405,8 +407,19 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void clearBackStack(boolean isInclusive) {
-
+    public void clearBackStack(boolean isInclusive, String fragmentTag) {
+        if (getSupportFragmentManager() != null) {
+            int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
+            if (backStackEntryCount <= 0) {
+                return;
+            }
+            if (isInclusive) {
+                getSupportFragmentManager()
+                        .popBackStack(fragmentTag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            } else {
+                getSupportFragmentManager().popBackStack(fragmentTag, 0);
+            }
+        }
     }
 
     @Override
@@ -450,7 +463,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void openGameScreen() {
-        replaceFragmentInDefaultLayout(GameFragment.newInstance());
+        replaceFragmentInDefaultLayout(GameFragment.newInstance(), true);
     }
 
     public void openWifiSettings() {
@@ -464,5 +477,6 @@ public class MainActivity extends AppCompatActivity implements
     public void showToolbar() {
         toolbar.setVisibility(View.VISIBLE);
     }
+
 
 }

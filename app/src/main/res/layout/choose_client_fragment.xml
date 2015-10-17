@@ -54,14 +54,15 @@
             android:textColor="@color/primary"
             android:textSize="24sp" />
 
-        <ImageView
+
+        <pl.droidsonroids.gif.GifImageView
             android:id="@+id/placeholder_happy_guy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/games_name_init"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="@dimen/padding_huge"
-            android:src="@drawable/text_dude_happy" />
+            android:src="@drawable/guy_awake" />
 
         <com.housing.typeracer.fonts.TextLight
             android:layout_width="match_parent"

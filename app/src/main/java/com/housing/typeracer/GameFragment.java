@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.nearby.Nearby;
 import com.housing.typeracer.fragments.BaseFragment;
+import com.housing.typeracer.fragments.LaunchFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class GameFragment extends BaseFragment implements TextWatcher {
+public class GameFragment extends BaseFragment implements TextWatcher, View.OnClickListener {
 
     private String myDeviceId;
     TextView para;
@@ -54,6 +55,7 @@ public class GameFragment extends BaseFragment implements TextWatcher {
     private long hostEndTime;
     private long clientEndTime;
     private Map<String, Integer> wpmMap;
+    private TextView exit;
 
     public static GameFragment newInstance() {
         return new GameFragment();
@@ -116,6 +118,8 @@ public class GameFragment extends BaseFragment implements TextWatcher {
     }
 
     private void initViews(View rootView) {
+        exit = (TextView) rootView.findViewById(R.id.exit);
+        exit.setOnClickListener(this);
         ((MainActivity) getActivityReference()).hideToolbar();
         para = (TextView) rootView.findViewById(R.id.tvPara);
         input = (EditText) rootView.findViewById(R.id.etInput);
@@ -327,4 +331,15 @@ public class GameFragment extends BaseFragment implements TextWatcher {
     @Override
     public void afterTextChanged(Editable s) {
     }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.exit:
+                getFragmentController().clearBackStack(false, LaunchFragment.class.getCanonicalName());
+                break;
+        }
+    }
+
+
 }

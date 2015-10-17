@@ -99,12 +99,12 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true">
 
-                <ImageView
+                <pl.droidsonroids.gif.GifImageView
                     android:id="@+id/img"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:src="@drawable/text_dude_sleepy" />
+                    android:src="@drawable/guy_nointernet" />
 
                 <com.housing.typeracer.fonts.TextLight
                     android:layout_width="match_parent"
