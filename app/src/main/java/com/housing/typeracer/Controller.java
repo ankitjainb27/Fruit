@@ -10,6 +10,7 @@ public interface Controller {
     int OPEN_CHOOSE_HOST_FRAGMENT = 102;
     int OPEN_CHOOSE_CLIENT_FRAGMENT = 103;
     int OPEN_AVATAR_SCREEN = 104;
+    int OPEN_GAME_FRAGMENT = 105;
 
     void performOperation(final int operation, Object input);
 

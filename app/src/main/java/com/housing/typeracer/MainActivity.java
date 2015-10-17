@@ -124,7 +124,6 @@ public class MainActivity extends AppCompatActivity implements
     public void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
-
     }
 
     @Override
@@ -335,6 +334,8 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case OPEN_AVATAR_SCREEN:
                 replaceFragmentInDefaultLayout(AvatarFragment.newInstance());
+            case OPEN_GAME_FRAGMENT:
+                openGameScreen();
                 break;
         }
     }
@@ -405,7 +406,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void openGameScreen() {
-
+        replaceFragmentInDefaultLayout(GameFragment.newInstance());
     }
 
     public void openWifiSettings() {

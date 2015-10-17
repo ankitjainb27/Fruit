@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -23,6 +24,7 @@ public class LaunchFragment extends BaseFragment implements View.OnClickListener
 
     private RelativeLayout mainLayout;
     private RelativeLayout noWifiLayout;
+    Button button;
 
     public static LaunchFragment newInstance() {
         return new LaunchFragment();
@@ -35,6 +37,7 @@ public class LaunchFragment extends BaseFragment implements View.OnClickListener
         View rootView = inflater.inflate(R.layout.launch_screen, container, false);
         mainLayout = (RelativeLayout) rootView.findViewById(R.id.main_layout);
         noWifiLayout = (RelativeLayout) rootView.findViewById(R.id.no_wifi_layout);
+        button = (Button) rootView.findViewById(R.id.button);
         rootView.findViewById(R.id.host_game_button).setOnClickListener(this);
         rootView.findViewById(R.id.discover_game_button).setOnClickListener(this);
         rootView.findViewById(R.id.wifi_connect).setOnClickListener(this);
@@ -43,6 +46,7 @@ public class LaunchFragment extends BaseFragment implements View.OnClickListener
         int rsrcId = MainApplication.avatarMappings.get(id);
         ((TextView) rootView.findViewById(R.id.welcomename)).setText(name);
         ((ImageView) rootView.findViewById(R.id.avatarid)).setImageResource(rsrcId);
+        button.setOnClickListener(this);
         return rootView;
     }
 
@@ -79,6 +83,10 @@ public class LaunchFragment extends BaseFragment implements View.OnClickListener
             case R.id.wifi_connect:
                 openSettings();
                 break;
+            case R.id.button: {
+                getFragmentController().performOperation(Controller.OPEN_GAME_FRAGMENT, null);
+                break;
+            }
         }
     }
 

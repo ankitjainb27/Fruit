@@ -1,0 +1,153 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#27273d"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/position"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="26dp"
+        android:text="Position"
+        android:textColor="@android:color/white" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="26dp"
+        android:text="Exit"
+        android:textColor="@android:color/white" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:layout_below="@id/position"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="73dp"
+        android:background="@drawable/light_blue" />
+
+    <RelativeLayout
+        android:id="@+id/progress_images"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/position"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="73dp">
+
+        <ImageView
+            android:id="@+id/image_view1"
+            android:layout_width="200dp"
+            android:layout_height="6dp"
+
+
+            android:background="@drawable/yellow" />
+
+        <ImageView
+            android:id="@+id/image_view2"
+            android:layout_width="150dp"
+            android:layout_height="6dp"
+
+            android:background="@drawable/green" />
+
+        <ImageView
+            android:id="@+id/image_view3"
+            android:layout_width="100dp"
+            android:layout_height="6dp"
+            android:background="@drawable/pink" />
+
+        <ImageView
+            android:id="@+id/image_view4"
+            android:layout_width="50dp"
+            android:layout_height="6dp"
+            android:background="@drawable/sky" />
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/position"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/check" />
+
+    <EditText
+        android:id="@+id/etInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/white"
+        android:inputType="textFilter"
+        android:padding="16dp"
+        android:textColor="@android:color/black" />
+
+    <ImageView
+        android:id="@+id/image_bar"
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        android:layout_above="@id/etInput"
+        android:background="@drawable/typewriter_bar" />
+
+    <ImageView
+
+        android:layout_width="match_parent"
+        android:layout_height="16dp"
+        android:layout_above="@id/image_bar"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/typewriter_back" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="16dp"
+        android:layout_above="@+id/scrollView"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@android:color/white" />
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="62dp"
+        android:layout_above="@+id/view"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="160dp">
+
+            <TextView
+                android:id="@+id/tvPara"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:lineSpacingMultiplier="1.5"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="air and deep beneath the rolling waves, in labyrinths of coral caves the echo of a distant tide comes willowing across the sand, and everything is green and submarine."
+                android:textColor="@color/light_blue"
+                android:textSize="18sp" />
+        </LinearLayout>
+    </ScrollView>
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="16dp"
+        android:layout_above="@id/etInput"
+        android:layout_marginBottom="12dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@android:color/white" />
+</RelativeLayout>

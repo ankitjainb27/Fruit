@@ -7,12 +7,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.nearby.Nearby;
 import com.housing.typeracer.Constants;
+import com.housing.typeracer.Controller;
 import com.housing.typeracer.MainActivity;
 import com.housing.typeracer.MainApplication;
 import com.housing.typeracer.R;
@@ -30,13 +31,12 @@ import java.util.List;
 public class ChooseClientFragment extends BaseFragment implements View.OnClickListener {
 
     private static final String TAG = "ChooseClientFragment";
-    private RecyclerView mRecyclerView;
     private List<Client> myDataset;
     private ChooseClientRecyclerAdapter mAdapter;
-    private Button startGameButton;
     private GoogleApiClient googleApiClient;
     private String myDeviceId;
     private String myRemoteId;
+    private RelativeLayout noClients, recyclerHolder;
 
     public static ChooseClientFragment newInstance() {
         return new ChooseClientFragment();
@@ -72,8 +72,11 @@ public class ChooseClientFragment extends BaseFragment implements View.OnClickLi
     }
 
     private void initViews(View rootView) {
-        startGameButton = (Button) rootView.findViewById(R.id.start_game_button);
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
+        rootView.findViewById(R.id.start_game_button).setOnClickListener(this);
+        rootView.findViewById(R.id.dismiss_game_button).setOnClickListener(this);
+        RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
+        noClients = (RelativeLayout) rootView.findViewById(R.id.rl_no_client);
+        recyclerHolder = (RelativeLayout) rootView.findViewById(R.id.rl_recycler_content);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivityReference()));
         mAdapter = new ChooseClientRecyclerAdapter(myDataset);
@@ -81,6 +84,7 @@ public class ChooseClientFragment extends BaseFragment implements View.OnClickLi
         addToGameUsers(myDeviceId, MainApplication.getSharedPreferences().getString(Constants.USER_NAME, "Host"), myRemoteId);
 
         ((TextView) rootView.findViewById(R.id.games_name)).setText(MainApplication.getSharedPreferences().getString(Constants.USER_NAME, "Host") + "'s Game");
+        ((TextView) rootView.findViewById(R.id.games_name_init)).setText(MainApplication.getSharedPreferences().getString(Constants.USER_NAME, "Host") + "'s Game Created");
     }
 
     public void newClientFound(String remoteEndpointId, String remoteDeviceId, String remoteEndpointName, byte[] payload) {
@@ -99,10 +103,14 @@ public class ChooseClientFragment extends BaseFragment implements View.OnClickLi
             e.printStackTrace();
         }
         if (myDataset.size() > 0) {
-            startGameButton.setEnabled(true);
+            noClients.setVisibility(View.GONE);
+            recyclerHolder.setVisibility(View.VISIBLE);
+        } else {
+            noClients.setVisibility(View.VISIBLE);
+            recyclerHolder.setVisibility(View.GONE);
         }
     }
-    
+
 
     private void addToGameUsers(String deviceId, String name, String remoteEndPoint) {
         MainApplication.USER_NAME.put(deviceId, name);
@@ -117,6 +125,9 @@ public class ChooseClientFragment extends BaseFragment implements View.OnClickLi
             case R.id.start_game_button:
                 startGame();
                 break;
+            case R.id.dismiss_game_button:
+                ((MainActivity) getActivityReference()).onBackPressed();
+                break;
         }
     }
 
@@ -129,7 +140,7 @@ public class ChooseClientFragment extends BaseFragment implements View.OnClickLi
                     Nearby.Connections.sendReliableMessage(googleApiClient, MainApplication.USER_REMOTE_ENDPOINT.get(device), startgame);
                 }
             }
-            ((MainActivity) getActivityReference()).openGameScreen();
+            getFragmentController().performOperation(Controller.OPEN_GAME_FRAGMENT, null);
         } catch (IOException e) {
             e.printStackTrace();
             MainApplication.showToast(R.string.something_went_wrong);
