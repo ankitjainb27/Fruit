@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import com.housing.typeracer.R;
 
@@ -14,7 +13,6 @@ import com.housing.typeracer.R;
  */
 public class LeaderboardFragment extends BaseFragment {
 
-    private ListView lv;
 
     public static LeaderboardFragment newInstance() {
         return new LeaderboardFragment();
@@ -29,7 +27,6 @@ public class LeaderboardFragment extends BaseFragment {
     }
 
     private void initViews(View rootView) {
-        lv = (ListView) rootView.findViewById(R.id.lv);
 
     }
 }

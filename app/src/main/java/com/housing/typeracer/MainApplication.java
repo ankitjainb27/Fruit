@@ -27,6 +27,7 @@ public class MainApplication extends Application {
     public static Map<String, String> USER_REMOTE_ENDPOINT;
     public static Map<String, Integer> USER_SCORE;
     public static Map<Integer, Integer> avatarMappings;
+    public static Map<String, Integer> wpmMap;
 
     @Override
     public void onCreate() {

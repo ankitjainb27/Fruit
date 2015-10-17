@@ -25,14 +25,21 @@
             android:layout_centerHorizontal="true"
             android:src="@drawable/guy_success" />
 
-        <ListView
+        <LinearLayout
             android:id="@+id/lv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/play_another"
-            android:layout_below="@id/img">
+            android:layout_below="@id/img"
+            android:orientation="vertical">
 
-        </ListView>
+            <include layout="@layout/lll" />
+
+            <include layout="@layout/llm" />
+
+            <include layout="@layout/mml" />
+
+        </LinearLayout>
 
     </RelativeLayout>
 

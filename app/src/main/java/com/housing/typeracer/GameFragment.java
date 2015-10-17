@@ -30,11 +30,10 @@ import com.housing.typeracer.fragments.LaunchFragment;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -67,7 +66,7 @@ public class GameFragment extends BaseFragment implements TextWatcher, View.OnCl
     private long startTime;
     private long hostEndTime;
     private long clientEndTime;
-    private Map<String, Integer> wpmMap;
+
     private TextView exit;
 
 
@@ -79,7 +78,7 @@ public class GameFragment extends BaseFragment implements TextWatcher, View.OnCl
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        wpmMap = new HashMap<>();
+        MainApplication.wpmMap = new HashMap<>();
         myDeviceId = ((MainActivity) getActivityReference()).myDeviceId;
         mGoogleApiClient = ((MainActivity) getActivityReference()).mGoogleApiClient;
         deviceRemoteIds = new ArrayList<>();
@@ -103,14 +102,22 @@ public class GameFragment extends BaseFragment implements TextWatcher, View.OnCl
                     + " [Value] : " + entry.getValue());
         }
     }
-    private void printMap(Map mp) {
-        Iterator it = mp.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry) it.next();
-            Log.v("map -", " " + pair.getKey() + " = " + pair.getValue());
-            calculateClientWPM((Integer) pair.getValue());
+
+    private boolean checkIfFinished() {
+        int finished = 0;
+        for (String key : MainApplication.USER_SCORE.keySet()) {
+            if (MainApplication.USER_SCORE.get(key) >= text.length()) {
+                finished++;
+            }
+            int wpm = calculateClientWPM(MainApplication.USER_SCORE.get(key));
+            MainApplication.wpmMap.put(key, wpm);
         }
+        if (finished == VALUES) {
+            return true;
+        }
+        return false;
     }
+
     private static Map<String, Integer> sortByComparator(Map<String, Integer> unsortMap) {
 
         // Convert Map to List
@@ -162,7 +169,10 @@ public class GameFragment extends BaseFragment implements TextWatcher, View.OnCl
 
     private Map<String, Integer> getPlayersPosition() {
         clientEndTime = System.currentTimeMillis();
-     //   printMap(MainApplication.USER_SCORE);
+        boolean finished = checkIfFinished();
+        if (finished) {
+            getFragmentController().performOperation(Controller.OPEN_LEADERBOARD, null);
+        }
         return MainApplication.USER_SCORE;
     }
 
@@ -445,16 +455,20 @@ public class GameFragment extends BaseFragment implements TextWatcher, View.OnCl
     }
 
     private void calculateHostWPM() {
-        int noOfWords = Utils.countWords(text);
+        int noOfChars = progressMy;
+        int noOfWords = noOfChars / 5;
         long timeToTypeInMillis = hostEndTime - startTime;
         long oneMinInMillis = 60000L;
         long wpm = (oneMinInMillis * noOfWords) / timeToTypeInMillis;
+        Log.v("hola host wpm =", " = " + wpm);
     }
 
-    private void calculateClientWPM(int noOfWords) {
+    private int calculateClientWPM(int charCount) {
         long timeToTypeInMillis = clientEndTime - startTime;
         long oneMinInMillis = 60000L;
-        long wpm = (oneMinInMillis * noOfWords) / timeToTypeInMillis;
+        long wpm = (oneMinInMillis * charCount) / (5 * timeToTypeInMillis);
+        Log.v("hola client wpm =", " = " + wpm);
+        return (int) wpm;
     }
 
     private int afterIndex(int counterText) {
