@@ -17,6 +17,14 @@
         <item name="android:layout_height">@dimen/footer_ht</item>
     </style>
 
+    <style name="transparentButtonStyle" parent="ButtonStyle">
+        <item name="android:background">@drawable/selector_transparent_drawable</item>
+        <item name="android:textColor">@color/blue_toolbar</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_margin">@dimen/padding_large</item>
+        <item name="android:layout_height">@dimen/footer_ht</item>
+    </style>
+
     <style name="ButtonStyle" parent="@android:style/Widget.Button">
         <item name="android:textSize">16sp</item>
     </style>

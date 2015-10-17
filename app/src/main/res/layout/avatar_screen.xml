@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blue_toolbar"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/padding_normal"
+        android:background="@color/white"
+        android:hint="Type your username"
+        android:padding="@dimen/padding_normal_plus"
+        android:textColor="@color/blue_toolbar"
+        android:textColorHint="@color/gray" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/username"
+        android:layout_marginBottom="@dimen/padding_huge"
+        android:layout_marginLeft="@dimen/padding_normal"
+        android:layout_marginRight="@dimen/padding_normal"
+        android:layout_marginTop="@dimen/padding_small"
+        android:background="@color/white">
+
+        <GridView
+            android:id="@+id/gridview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:columnWidth="86dp"
+            android:gravity="center"
+            android:horizontalSpacing="8dp"
+            android:numColumns="auto_fit"
+            android:padding="@dimen/padding_small"
+            android:scrollbars="none"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="20dp">
+
+        </GridView>
+
+        <Button
+            android:id="@+id/proceed"
+            style="@style/greenButtonStyle"
+            android:layout_alignParentBottom="true"
+            android:text="PROCEED" />
+
+
+    </RelativeLayout>
+
+</RelativeLayout>
