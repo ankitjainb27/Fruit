@@ -181,8 +181,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public void connectToHost(final String deviceId, String endpointId, final String serviceId) {
         byte[] payload = null;
-        String name = null;
-        Nearby.Connections.sendConnectionRequest(mGoogleApiClient, name,
+        Nearby.Connections.sendConnectionRequest(mGoogleApiClient, deviceId,
                 endpointId, payload, new Connections.ConnectionResponseCallback() {
 
                     @Override

@@ -54,7 +54,7 @@ public class ConnectionUtils {
         // Positive values represent timeout in milliseconds
         long NO_TIMEOUT = 0L;
 
-        String name = null;
+        String name = Nearby.Connections.getLocalDeviceId(mGoogleApiClient);
         Nearby.Connections.startAdvertising(mGoogleApiClient, name, appMetadata, NO_TIMEOUT, listener).setResultCallback(new ResultCallback<Connections.StartAdvertisingResult>() {
             @Override
             public void onResult(Connections.StartAdvertisingResult result) {
