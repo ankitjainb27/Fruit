@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blue_toolbar">
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="type" />
+
+    <RelativeLayout
+        android:id="@+id/main_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:padding="@dimen/padding_medium">
+
+        <Button
+            android:id="@+id/host_game_button"
+            style="@style/greenButtonStyle"
+            android:layout_alignParentBottom="true"
+            android:text="Host a game" />
+
+        <Button
+            android:id="@+id/discover_game_button"
+            style="@style/greenButtonStyle"
+            android:layout_above="@id/host_game_button"
+            android:layout_marginBottom="@dimen/padding_medium"
+            android:text="Join an existing game" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/discover_game_button">
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_centerInParent="true"
+                android:src="@color/black" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/no_wifi_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/padding_medium"
+        android:layout_marginRight="@dimen/padding_medium"
+        android:background="@color/white"
+        android:visibility="gone">
+
+        <com.housing.typeracer.fonts.TextRegular
+            android:id="@+id/hdr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/padding_huge"
+            android:layout_marginRight="@dimen/padding_huge"
+            android:layout_marginTop="@dimen/padding_v_large"
+            android:gravity="center"
+            android:text="Let's rest your thumb"
+            android:textColor="@color/blue_toolbar"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/wifi_connect"
+            style="@style/greenButtonStyle"
+            android:layout_alignParentBottom="true"
+            android:text="CONNECT TO WIFI" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/wifi_connect"
+            android:layout_below="@id/hdr">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true">
+
+                <ImageView
+                    android:id="@+id/img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/text_dude_sleepy" />
+
+                <com.housing.typeracer.fonts.TextLight
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/img"
+                    android:layout_marginTop="@dimen/padding_v_large"
+                    android:gravity="center"
+                    android:text="Yeah! You guessed it right.\n No internet connection"
+                    android:textColor="@color/color_676777"
+                    android:textSize="16sp" />
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+</RelativeLayout>

@@ -1,261 +1,364 @@
 package com.housing.typeracer;
 
-import android.graphics.Color;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.Layout;
-import android.text.SpannableString;
-import android.text.TextWatcher;
-import android.text.style.ForegroundColorSpan;
-import android.util.DisplayMetrics;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.widget.EditText;
-import android.widget.ScrollView;
-import android.widget.TextView;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.nearby.Nearby;
+import com.google.android.gms.nearby.connection.Connections;
+import com.housing.typeracer.fragments.BaseFragment;
+import com.housing.typeracer.fragments.ChooseClientFragment;
+import com.housing.typeracer.fragments.ChooseHostFragment;
+import com.housing.typeracer.fragments.LaunchFragment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements TextWatcher {
 
-    TextView para;
-    EditText input;
-    String text;
-    int counterText = 0;
-    int flag = 0;
-    int mistake;
-    SpannableString styledString;
-    private int progressStatus = 0;
-    private Handler handler = new Handler();
-    ScrollView scrollView;
-    ArrayList<Integer> list = new ArrayList<>();
+public class MainActivity extends AppCompatActivity implements
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        View.OnClickListener,
+        Connections.ConnectionRequestListener,
+        Connections.MessageListener,
+        Connections.EndpointDiscoveryListener, Controller {
 
+    // Identify if the device is the host
+//    public boolean mIsHost = false;
+    public GoogleApiClient mGoogleApiClient;
+    public boolean mIsConnected;
+    public String mRemoteHostEndpoint;
+    private List<String> mRemotePeerEndpoints = new ArrayList<String>();
+    private FrameLayout frameLayout;
+    private FragmentTransaction fragmentTransaction;
+    private Toolbar toolbar;
+    private int playersCount = 0;
+    private String myDeviceId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        /*getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
-        para = (TextView) findViewById(R.id.tvPara);
-        input = (EditText) findViewById(R.id.etInput);
-        scrollView = (ScrollView) findViewById(R.id.scrollView);
-        input.addTextChangedListener(this);
-        text = para.getText().toString();
-        scrollView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
-        para.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                para.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(Nearby.CONNECTIONS_API)
+                .build();
+        initViews();
+    }
 
-                final Layout layout = para.getLayout();
+    private void initViews() {
+        frameLayout = (FrameLayout) findViewById(R.id.mainFrameLayout);
+        initToolbar();
+        initLaunchFragment();
+    }
 
-                // Loop over all the lines and do whatever you need with
-                // the width of the line
-                for (int i = 1; i < layout.getLineCount(); i++) {
-                    int end = layout.getLineEnd(i);
-                    list.add(i);
-                    Log.i("ankitscroll", String.valueOf(end));
-                    if (i == 0) {
-                        //   scrollView.scrollTo(0, para.getLineHeight());
+    private void initToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar_main);
+        toolbar.setNavigationIcon(R.drawable.default_nav_icon_back);
+        toolbar.setTitleTextAppearance(this, R.style.toolBarTitleStyle);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        if (menuItem.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(menuItem);
+    }
+
+    private void initLaunchFragment() {
+        replaceFragmentInDefaultLayout(LaunchFragment.newInstance());
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        myDeviceId = Nearby.Connections.getLocalDeviceId(mGoogleApiClient);
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+    }
+
+    @Override
+    public void onConnectionRequest(final String remoteEndpointId, final String remoteDeviceId, final String remoteEndpointName, final byte[] payload) {
+        if (MainApplication.mIsHost && playersCount < Constants.TOTAL_PLAYERS) {
+            Nearby.Connections.acceptConnectionRequest(mGoogleApiClient, remoteEndpointId, payload, this).setResultCallback(new ResultCallback<Status>() {
+                @Override
+                public void onResult(Status status) {
+                    if (status.isSuccess()) {
+                        if (!mRemotePeerEndpoints.contains(remoteEndpointId)) {
+                            mRemotePeerEndpoints.add(remoteEndpointId);
+                            addToUI(remoteEndpointId, remoteDeviceId, remoteEndpointName, payload);
+                            playersCount++;
+                        }
+
+                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+                        MainApplication.showToast(remoteDeviceId + " connected!");
                     }
-                   /* SpannableString content = new SpannableString(para.getText().toString());
-                    content.setSpan(new StyleSpan(Typeface.BOLD), 0, end, 0);
-                    content.setSpan(new StyleSpan(Typeface.NORMAL), end, content.length(), 0);
-                   */ //      para.setText(content);
                 }
-            }
-        });
-        styledString
-                = new SpannableString(text);
-        styledString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.blue)), beforeIndex(counterText), afterIndex(counterText), 0);
-        para.setText(styledString);
-
+            });
+        } else {
+            Nearby.Connections.rejectConnectionRequest(mGoogleApiClient, remoteEndpointId);
+        }
     }
 
-    private int dpToPx(int dp) {
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return px;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    private void addToUI(String remoteEndpointId, String remoteDeviceId, String remoteEndpointName, byte[] payload) {
+        BaseFragment baseFragment = (BaseFragment) getSupportFragmentManager().findFragmentById(R.id.mainFrameLayout);
+        if (baseFragment instanceof ChooseClientFragment) {
+            ((ChooseClientFragment) baseFragment).newClientFound(remoteEndpointId, remoteDeviceId, remoteEndpointName, payload);
+        }
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    public void onEndpointFound(String endpointId, String deviceId, final String serviceId, String endpointName) {
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        BaseFragment baseFragment = (BaseFragment) getSupportFragmentManager().findFragmentById(R.id.mainFrameLayout);
+        if (baseFragment instanceof ChooseHostFragment) {
+            ((ChooseHostFragment) baseFragment).newHostFount(endpointId, deviceId, serviceId, endpointName);
         }
 
-        return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
- /*       Log.i("ankit_before_start", String.valueOf(start));
-        Log.i("ankit_before_count", String.valueOf(count));
-        Log.i("ankit_before_after", String.valueOf(count));
-        if (start == 0 && count == 1) {
-            counterText--;
-            input.setBackgroundColor(Color.WHITE);
-        }
-*/
-     /*   if (start < count) {
-             *//*   Log.i("ankitbefore", String.valueOf(before));
-                Log.i("ankitcount", String.valueOf(count));
-                Log.i("ankittext", String.valueOf(counterText));
-             *//*
-            counterText++;
+    public void connectToHost(final String deviceId, String endpointId, final String serviceId) {
+        byte[] payload = null;
+        String name = "client1";
+        Nearby.Connections.sendConnectionRequest(mGoogleApiClient, name,
+                endpointId, payload, new Connections.ConnectionResponseCallback() {
 
-        } else if (start > count) {
-             *//*   Log.i("ankitbefore", String.valueOf(before));
-                Log.i("ankitcount", String.valueOf(count));
-                Log.i("ankittext", String.valueOf(counterText));
-             *//*
-            counterText--;
-        }
-  */
-    }
+                    @Override
+                    public void onConnectionResponse(String endpointId, Status status, byte[] bytes) {
+                        if (status.isSuccess()) {
+                            MainApplication.showToast("Connected to: " + endpointId);
+                            Nearby.Connections.stopDiscovery(mGoogleApiClient, serviceId);
+                            mRemoteHostEndpoint = endpointId;
 
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        Log.i("ankit_ON_start", String.valueOf(start));
-        Log.i("ankit_ON_count", String.valueOf(count));
-        Log.i("ankit_ON_before", String.valueOf(before));
-        Log.i("ankit_ON_S", s.toString());
-        Log.i("ankit_ON_counter", String.valueOf(counterText));
-//if(counterText )
-        if (count > before) {
-            if (flag == 0) {
-                if (counterText < text.length() - 1) {
-                    if (!(Character.toString(text.charAt(counterText + start))).equals(Character.toString(s.charAt(start)))) {
-                        if (!Character.toString(s.charAt(start)).equals(" ")) {
-                            input.setBackgroundColor(Color.RED);
-                            flag = 1;
-                            mistake = start;
+                            if (!MainApplication.mIsHost) {
+                                mIsConnected = true;
+                                BaseFragment baseFragment = (BaseFragment) getSupportFragmentManager().findFragmentById(R.id.mainFrameLayout);
+                                if (baseFragment instanceof ChooseHostFragment) {
+                                    ((ChooseHostFragment) baseFragment).connectedToHost(endpointId);
+                                }
+                            }
                         } else {
-                            input.setText((input.getText().toString()).replace(" ", ""));
-                        }
-                    } else {
-                        if ((Character.toString(s.charAt(start))).equals(" ")) {
-                            input.setText("");
-                            counterText = counterText + start + 1;
-                            Log.i("ankit_ON_counter1", String.valueOf(counterText));
-                            styledString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.light_blue)), 0, text.length(), 0);
-                            styledString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.blue)), counterText, afterIndex(counterText), 0);
-                            Log.i("ankit_ON_after", String.valueOf(afterIndex(counterText)));
-                            para.setText(styledString);
+                            Log.d("ERROR", status.getStatusMessage());
+                            MainApplication.showToast("Connection to " + endpointId + " failed");
+                            if (!MainApplication.mIsHost) {
+                                mIsConnected = false;
+                            }
                         }
                     }
-                }
-            }
-        } else if (count < before) {
-            if (start == mistake) {
-                input.setBackgroundColor(Color.WHITE);
-                flag = 0;
-            }
-        }
-
-       /* Log.i("ankit_ON_start", String.valueOf(start));
-        Log.i("ankit_ON_count", String.valueOf(count));
-        Log.i("ankit_ON_before", String.valueOf(before));
-        Log.i("ankit_ON_COUNTER", String.valueOf(counterText));
-        String last = input.getText().toString();
-        if (last.length() > 0) {
-            if (last.length() == 1) {
-                last = last.substring(0);
-            } else {
-                last = last.substring(last.length() - 1);
-            }
-            Log.i("ankit_ON_last", last);
-            if (!last.equals(Character.toString(text.charAt(counterText)))) {
-                input.setBackgroundColor(Color.RED);
-                flag = 1;
-            } else {
-                if (flag == 0) {
-                    if (before < count) {
-                        counterText++;
-                    } else {
-                        counterText--;
-                    }
-                    styledString.setSpan(new ForegroundColorSpan(Color.BLUE), beforeIndex(counterText), afterIndex(counterText), 0);
-                    para.setText(styledString);
-                    if (last.equals(" ")) {
-                        input.setText("");
-                    }
-                }
-            }
-      *//*      Log.i("ankitbefore", String.valueOf(beforeIndex(counterText)));
-            Log.i("ankitafter", String.valueOf(afterIndex(counterText)));
-*//*
-            if (before == 1 && count == 0) {
-                input.setBackgroundColor(Color.WHITE);
-            }
-            Log.i("ankitontext", "came" + counterText);
-        }
-   */
-
+                }, this);
     }
 
-    private int afterIndex(int counterText) {
-        int afterIndex = counterText;
-        if (counterText < text.length() - 1) {
-            if (!Character.toString(text.charAt(counterText)).equals(" ")) {
-                for (int i = counterText; i < text.length(); i++) {
-                    if (Character.toString(text.charAt(i)).equals(" ")) {
-                        afterIndex = i;
-                        break;
-                    }
-                }
-            }
-        }
-        return afterIndex;
+    @Override
+    public void onEndpointLost(String s) {
+        MainApplication.showToast("endpoint lost");
     }
 
-    private int beforeIndex(int counterText) {
-        int beforeIndex = counterText;
-
-        if (!Character.toString(text.charAt(counterText)).equals(" ")) {
-            if (counterText == 1) {
-                beforeIndex = 0;
-            } else {
-                for (int i = counterText; i > 0; i--) {
-                    if (Character.toString(text.charAt(i)).equals(" ")) {
-                        beforeIndex = i;
-                        break;
+    @Override
+    public void onMessageReceived(String endpointId, byte[] payload, boolean isReliable) {
+        if (isReliable && !MainApplication.mIsHost) {
+            try {
+                Object obj = Serializer.deserialize(payload);
+                if (obj instanceof HashMap) {
+                    Map<String, String> userName = (HashMap<String, String>) obj;
+                    showToastToUser(userName);
+                    MainApplication.USER_NAME.putAll(userName);
+                    for (String key : userName.keySet()) {
+                        MainApplication.USER_SCORE.put(key, 0);
+                        MainApplication.showToast("RELIABLE DATA : " + key);
+                    }
+                } else if (obj instanceof String) {
+                    String data = (String) obj;
+                    if (data.equalsIgnoreCase(Constants.START_GAME)) {
+                        openGameScreen();
                     }
                 }
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
-        return beforeIndex;
+    }
+
+    private void showToastToUser(Map<String, String> userName) {
+        for (String key : userName.keySet()) {
+            String name = MainApplication.USER_NAME.get(key);
+            if (name != null && myDeviceId != null && !key.equalsIgnoreCase(myDeviceId)) {
+                MainApplication.showToast(name + " also joined!");
+            }
+        }
+    }
+
+    @Override
+    public void onDisconnected(String s) {
 
     }
 
     @Override
-    public void afterTextChanged(Editable s) {
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
     }
+
+    public void startDiscovery() {
+        if (!ConnectionUtils.isConnectedToNetwork()) {
+            MainApplication.showToast(R.string.not_connected_to_network);
+            return;
+        }
+
+        // Identify that this device is NOT the host
+        MainApplication.mIsHost = false;
+        String serviceId = MainApplication.getContext().getString(R.string.service_id);
+
+        // Set an appropriate timeout length in milliseconds
+        long DISCOVER_TIMEOUT = 1000L;
+
+        Nearby.Connections.startDiscovery(mGoogleApiClient, serviceId, DISCOVER_TIMEOUT, MainActivity.this)
+                .setResultCallback(new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        if (status.isSuccess()) {
+                        } else {
+                            MainApplication.showToast(R.string.something_went_wrong);
+                        }
+                    }
+                });
+    }
+
+    public void replaceFragmentInDefaultLayout(BaseFragment fragmentToBeLoaded) {
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.mainFrameLayout, fragmentToBeLoaded,
+                fragmentToBeLoaded.getName());
+        fragmentTransaction.addToBackStack(fragmentToBeLoaded.getName());
+        fragmentTransaction.commit();
+
+    }
+
+    @Override
+    public void performOperation(int operation, Object input) {
+        switch (operation) {
+            case OPEN_LAUNCH_FRAGMENT:
+                replaceFragmentInDefaultLayout(LaunchFragment.newInstance());
+                break;
+            case OPEN_CHOOSE_HOST_FRAGMENT:
+                replaceFragmentInDefaultLayout(ChooseHostFragment.newInstance());
+                break;
+            case OPEN_CHOOSE_CLIENT_FRAGMENT:
+                replaceFragmentInDefaultLayout(ChooseClientFragment.newInstance());
+                break;
+            case OPEN_GAME_FRAGMENT:
+                openGameScreen();
+                break;
+        }
+    }
+
+    @Override
+    public Fragment getCurrentFragment() {
+        return null;
+    }
+
+    @Override
+    public Fragment getTopFragmentInBackStack() {
+        return null;
+    }
+
+    @Override
+    public ViewGroup getFragmentContainer() {
+        return null;
+    }
+
+    @Override
+    public void popBackStackIfForeground() {
+
+    }
+
+    @Override
+    public void popBackStack() {
+
+    }
+
+    @Override
+    public void clearBackStack(boolean isInclusive) {
+
+    }
+
+    @Override
+    public int getStatusBarHeight() {
+        int statusBarHeight = 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+            if (resourceId > 0) {
+                statusBarHeight = getResources().getDimensionPixelSize(resourceId);
+            }
+        }
+        return statusBarHeight;
+    }
+
+    @Override
+    public void onClick(View v) {
+
+    }
+
+    public void startAdvertising() {
+        ConnectionUtils.startAdvertising(mGoogleApiClient, MainActivity.this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        FragmentManager manager = getSupportFragmentManager();
+        if (manager.getBackStackEntryCount() > 1) {
+            manager.popBackStack();
+        } else {
+            finish();
+        }
+    }
+
+    public void setToolbarTitle(String title) {
+        toolbar.setTitle(title);
+    }
+
+    public void openGameScreen() {
+        replaceFragmentInDefaultLayout(GameFragment.newInstance());
+    }
+
+    public void openWifiSettings() {
+        startActivity(new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS));
+    }
+
 }

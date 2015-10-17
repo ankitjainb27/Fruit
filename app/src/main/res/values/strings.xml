@@ -3,4 +3,15 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <!--
+      This is the service identifier for Nearby Connections. Do NOT copy and paste this value
+      into your own application.  Instead, choose a unique identifier that is appropriate for
+      your application.
+  -->
+    <string name="service_id">com.housing.typeracer.serviceid</string>
+    <string name="not_connected_to_network">Please connect to a WiFi network first</string>
+    <string name="advertising_now">You are advertising now.</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="already_hosting">You are already a host</string>
+    ...
 </resources>
