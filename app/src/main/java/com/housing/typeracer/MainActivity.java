@@ -220,7 +220,6 @@ public class MainActivity extends AppCompatActivity implements
                 if (obj instanceof HashMap) {
                     Map<String, String> userName = (HashMap<String, String>) obj;
                     showToastToUser(userName);
-
                     MainApplication.USER_NAME.putAll(userName);
                     for (String key : userName.keySet()) {
                         MainApplication.USER_SCORE.put(key, 0);
