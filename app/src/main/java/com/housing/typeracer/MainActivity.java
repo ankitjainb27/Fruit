@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -152,7 +151,6 @@ public class MainActivity extends AppCompatActivity implements
                             addToUI(remoteEndpointId, remoteDeviceId, remoteEndpointName, payload);
                             playersCount++;
                         }
-
                         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                     }
                 }
@@ -179,11 +177,11 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    public void connectToHost(final String deviceId, String endpointId, final String serviceId) {
+
+    public void connectToHost(String rEndpointId, final String deviceId, final String serviceId) {
         byte[] payload = null;
-        String name = "client1";
-        Nearby.Connections.sendConnectionRequest(mGoogleApiClient, name,
-                endpointId, payload, new Connections.ConnectionResponseCallback() {
+        Nearby.Connections.sendConnectionRequest(mGoogleApiClient, deviceId,
+                rEndpointId, payload, new Connections.ConnectionResponseCallback() {
 
                     @Override
                     public void onConnectionResponse(String endpointId, Status status, byte[] bytes) {
@@ -200,7 +198,6 @@ public class MainActivity extends AppCompatActivity implements
                                 }
                             }
                         } else {
-                            Log.d("ERROR", "connection failed");
                             MainApplication.showToast("Connection to " + endpointId + " failed");
                             if (!MainApplication.mIsHost) {
                                 mIsConnected = false;
@@ -223,10 +220,10 @@ public class MainActivity extends AppCompatActivity implements
                 if (obj instanceof HashMap) {
                     Map<String, String> userName = (HashMap<String, String>) obj;
                     showToastToUser(userName);
+
                     MainApplication.USER_NAME.putAll(userName);
                     for (String key : userName.keySet()) {
                         MainApplication.USER_SCORE.put(key, 0);
-                        MainApplication.showToast("RELIABLE DATA : " + key);
                     }
                 } else if (obj instanceof String) {
                     String data = (String) obj;
@@ -284,6 +281,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
     }
+
 
     private String getDeviceIdFromEndpoint(String endpoint) {
         for (String key : MainApplication.USER_REMOTE_ENDPOINT.keySet()) {

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.nearby.Nearby;
 import com.housing.typeracer.Constants;
 import com.housing.typeracer.MainActivity;
@@ -30,11 +31,12 @@ import java.util.List;
 public class ChooseHostFragment extends BaseFragment implements View.OnClickListener {
 
     private static final String TAG = "ChooseHostFragment";
-    private RecyclerView mRecyclerView;
     private List<Host> myDataset;
     private ChooseHostRecyclerAdapter mAdapter;
     private RelativeLayout confirmedlayout;
     private TextView confirmedHdr;
+    private GoogleApiClient mGoogleApiClient;
+    private String myDeviceId, myEndpointId;
 
     public static ChooseHostFragment newInstance() {
         return new ChooseHostFragment();
@@ -44,6 +46,9 @@ public class ChooseHostFragment extends BaseFragment implements View.OnClickList
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         myDataset = new ArrayList<>();
+        mGoogleApiClient = ((MainActivity) getActivityReference()).mGoogleApiClient;
+        myDeviceId = Nearby.Connections.getLocalDeviceId(mGoogleApiClient);
+        myEndpointId = Nearby.Connections.getLocalEndpointId(mGoogleApiClient);
     }
 
     @Override
@@ -67,7 +72,7 @@ public class ChooseHostFragment extends BaseFragment implements View.OnClickList
     }
 
     private void initViews(View rootView) {
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
+        RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
         confirmedlayout = (RelativeLayout) rootView.findViewById(R.id.confirmed_layout);
         confirmedHdr = (TextView) rootView.findViewById(R.id.hdr);
         rootView.findViewById(R.id.nudge_host_button).setOnClickListener(this);
@@ -80,7 +85,7 @@ public class ChooseHostFragment extends BaseFragment implements View.OnClickList
                     @Override
                     public void onItemClick(View view, int position) {
                         Host data = myDataset.get(position);
-                        ((MainActivity) getActivityReference()).connectToHost(data.getDeviceId(), data.getEndpointId(), data.getServiceId());
+                        ((MainActivity) getActivityReference()).connectToHost(data.getEndpointId(), myDeviceId, data.getServiceId());
                     }
                 })
         );

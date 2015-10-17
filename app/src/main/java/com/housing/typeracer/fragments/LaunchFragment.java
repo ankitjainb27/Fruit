@@ -86,7 +86,6 @@ public class LaunchFragment extends BaseFragment implements View.OnClickListener
         }
     }
 
-
     private void openSettings() {
         ((MainActivity) getActivityReference()).openWifiSettings();
     }
