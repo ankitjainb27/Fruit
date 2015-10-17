@@ -106,12 +106,12 @@ public class MainActivity extends AppCompatActivity implements
         if (MainApplication.getSharedPreferences().contains(MainApplication.prof_key)) {
             boolean isProfilePresent = MainApplication.getSharedPreferences().getBoolean(MainApplication.prof_key, false);
             if (isProfilePresent) {
-                replaceFragmentInDefaultLayout(LaunchFragment.newInstance(), true);
+                replaceFragmentInDefaultLayout(LaunchFragment.newInstance());
             } else {
-                replaceFragmentInDefaultLayout(GetStartedFragment.newInstance(), true);
+                replaceFragmentInDefaultLayout(GetStartedFragment.newInstance());
             }
         } else {
-            replaceFragmentInDefaultLayout(GetStartedFragment.newInstance(), true);
+            replaceFragmentInDefaultLayout(GetStartedFragment.newInstance());
         }
 
     }
@@ -343,13 +343,11 @@ public class MainActivity extends AppCompatActivity implements
                 });
     }
 
-    public void replaceFragmentInDefaultLayout(BaseFragment fragmentToBeLoaded, boolean addToBackStack) {
+    public void replaceFragmentInDefaultLayout(BaseFragment fragmentToBeLoaded) {
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.mainFrameLayout, fragmentToBeLoaded,
                 fragmentToBeLoaded.getName());
-        if (addToBackStack) {
-            fragmentTransaction.addToBackStack(fragmentToBeLoaded.getName());
-        }
+        fragmentTransaction.addToBackStack(fragmentToBeLoaded.getName());
         fragmentTransaction.commit();
 
     }
@@ -358,22 +356,22 @@ public class MainActivity extends AppCompatActivity implements
     public void performOperation(int operation, Object input) {
         switch (operation) {
             case OPEN_LAUNCH_FRAGMENT:
-                replaceFragmentInDefaultLayout(LaunchFragment.newInstance(), true);
+                replaceFragmentInDefaultLayout(LaunchFragment.newInstance());
                 break;
             case OPEN_CHOOSE_HOST_FRAGMENT:
-                replaceFragmentInDefaultLayout(ChooseHostFragment.newInstance(), false);
+                replaceFragmentInDefaultLayout(ChooseHostFragment.newInstance());
                 break;
             case OPEN_CHOOSE_CLIENT_FRAGMENT:
-                replaceFragmentInDefaultLayout(ChooseClientFragment.newInstance(), false);
+                replaceFragmentInDefaultLayout(ChooseClientFragment.newInstance());
                 break;
             case OPEN_AVATAR_SCREEN:
-                replaceFragmentInDefaultLayout(AvatarFragment.newInstance(), true);
+                replaceFragmentInDefaultLayout(AvatarFragment.newInstance());
                 break;
             case OPEN_GAME_FRAGMENT:
                 openGameScreen();
                 break;
             case OPEN_LEADERBOARD:
-                replaceFragmentInDefaultLayout(LeaderboardFragment.newInstance(), true);
+                replaceFragmentInDefaultLayout(LeaderboardFragment.newInstance());
                 break;
 
         }
@@ -461,7 +459,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void openGameScreen() {
-        replaceFragmentInDefaultLayout(GameFragment.newInstance(), true);
+        replaceFragmentInDefaultLayout(GameFragment.newInstance());
     }
 
     public void openWifiSettings() {
