@@ -34,6 +34,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class GameFragment extends BaseFragment implements TextWatcher {
 
@@ -57,6 +58,7 @@ public class GameFragment extends BaseFragment implements TextWatcher {
     private GoogleApiClient mGoogleApiClient;
     private List<String> deviceRemoteIds;
     Map<String, Integer> map;
+    Set<String> keys;
 
 
     public static GameFragment newInstance() {
@@ -76,9 +78,19 @@ public class GameFragment extends BaseFragment implements TextWatcher {
             }
         }
         map = getPlayersPosition();
+        keys = map.keySet();
         map = sortByComparator(map);
         VALUES = map.size();
+        Log.i("ankitv", String.valueOf(VALUES));
+        // printMap(map);
 
+    }
+
+    public static void printMap(Map<String, Integer> map) {
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            System.out.println("[Key] : " + entry.getKey()
+                    + " [Value] : " + entry.getValue());
+        }
     }
 
     private static Map<String, Integer> sortByComparator(Map<String, Integer> unsortMap) {
@@ -118,6 +130,7 @@ public class GameFragment extends BaseFragment implements TextWatcher {
                 byte[] data = Serializer.serialize(MainApplication.USER_SCORE);
                 Nearby.Connections.sendUnreliableMessage(mGoogleApiClient, deviceRemoteIds, data);
             } catch (Exception p) {
+                p.printStackTrace();
             }
         }
     }
@@ -151,7 +164,6 @@ public class GameFragment extends BaseFragment implements TextWatcher {
         imageView.post(new Runnable() {
                            public void run() {
                                width = imageView.getMeasuredWidth();
-                               Log.i("width", String.valueOf(width));
                            }
                        }
         );
@@ -182,7 +194,6 @@ public class GameFragment extends BaseFragment implements TextWatcher {
                 // the width of the line
                 for (int i = 0; i < layout.getLineCount() - 1; i++) {
                     int end = layout.getLineEnd(i);
-                    Log.i("ankitp", String.valueOf(end));
                     list.add(end);
                 }
             }
@@ -214,14 +225,69 @@ public class GameFragment extends BaseFragment implements TextWatcher {
         t.start();
     }
 
+
     private void updateProgressBar() {
-        for (int i = VALUES - 1; i == 0; i--) {
-            lp.width = (width * progressMy) / map.get(i);
+        map = getPlayersPosition();
+
+        Log.i("ankitt", String.valueOf(keys.size()));
+
+        printMap(map);
+        int i = 0;
+        for (String key : keys) {
+            lp.width = (width * map.get(key)) / text.length();
+            Log.i("width", String.valueOf(lp.width));
             IMGS[i].setLayoutParams(lp);
+            if (i == 0) {
+                IMGS[i].setImageResource(R.drawable.green);
+              /*  IMGS[i].setImageDrawable(getResources().getDrawable(R.drawable.green));
+              */  // IMGS[i].setBackground(getResources().getDrawable(R.drawable.green));
+            } else if (i == 1) {
+                IMGS[i].setImageResource(R.drawable.pink);
+                //     IMGS[i].setImageDrawable(getResources().getDrawable(R.drawable.pink));
+
+                //   IMGS[i].setBackground(getResources().getDrawable(R.drawable.pink));
+            }
+            /*}*/
+        }
+
+      /*  for (int i = 0; i < VALUES; i++) {
+      *//*  for (String key : keys) {
+      *//*      *//*if (i < VALUES) {
+            *//*
+            lp.width = (width * map.get(new ArrayList<>(keys).get(i))) / text.length();
+            Log.i("width", String.valueOf(lp.width));
+            IMGS[i].setLayoutParams(lp);
+            if (i == 0) {
+                IMGS[i].setImageResource(R.drawable.green);
+              *//*  IMGS[i].setImageDrawable(getResources().getDrawable(R.drawable.green));
+              *//*  // IMGS[i].setBackground(getResources().getDrawable(R.drawable.green));
+            } else if (i == 1) {
+                IMGS[i].setImageResource(R.drawable.pink);
+                //     IMGS[i].setImageDrawable(getResources().getDrawable(R.drawable.pink));
+
+                //   IMGS[i].setBackground(getResources().getDrawable(R.drawable.pink));
+            }
+            *//*}*//*
+        }
+      *//*  for (int i = 0; i < VALUES; i++) {
+
+            lp.width = (width * map.get(keys.)) / text.length();
+            Log.i("width", String.valueOf(lp.width));
+            IMGS[i].setLayoutParams(lp);
+
             //  IMGS[i].setBackground();
         }
+    */
     }
 
+    private String getKey(Integer value) {
+        for (String key : map.keySet()) {
+            if (map.get(key).equals(value)) {
+                return key; //return the first found
+            }
+        }
+        return null;
+    }
 
     private int dpToPx(int dp) {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
@@ -259,12 +325,12 @@ public class GameFragment extends BaseFragment implements TextWatcher {
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        Log.i("ankit_ON_start", String.valueOf(start));
+     /*   Log.i("ankit_ON_start", String.valueOf(start));
         Log.i("ankit_ON_count", String.valueOf(count));
         Log.i("ankit_ON_before", String.valueOf(before));
         Log.i("ankit_ON_S", s.toString());
         Log.i("ankit_ON_counter", String.valueOf(counterText));
-
+*/
         if (count > before) {
             if (flag == 0) {
                 if (counterText + start < text.length()) {
@@ -350,11 +416,11 @@ public class GameFragment extends BaseFragment implements TextWatcher {
 
     private int afterIndex(int counterText) {
         int afterIndex = counterText;
-        Log.i("ankitc", String.valueOf(counterText));
+        //  Log.i("ankitc", String.valueOf(counterText));
         if (counterText < text.length()) {
             if (!Character.toString(text.charAt(counterText)).equals(" ")) {
                 for (int i = counterText; i < text.length(); i++) {
-                    Log.i("ankitc", String.valueOf(i));
+                    //       Log.i("ankitc", String.valueOf(i));
                     if (Character.toString(text.charAt(i)).equals(" ")) {
                         afterIndex = i;
                         break;

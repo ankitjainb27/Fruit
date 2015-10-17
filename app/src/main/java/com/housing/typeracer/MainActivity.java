@@ -270,11 +270,21 @@ public class MainActivity extends AppCompatActivity implements
                 Object obj = Serializer.deserialize(payload);
                 if (obj instanceof Map) {
                     Map<String, Integer> data = (HashMap<String, Integer>) obj;
-                    MainApplication.USER_SCORE.putAll(data);
+
+                    for (String key : data.keySet()) {
+                        MainApplication.USER_SCORE.put(key, data.get(key));
+                    }
                 }
             } catch (Exception p) {
 
             }
+        }
+    }
+
+    public static void printMap(Map<String, Integer> map) {
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            System.out.println("[Key] : " + entry.getKey()
+                    + " [Value] : " + entry.getValue());
         }
     }
 
