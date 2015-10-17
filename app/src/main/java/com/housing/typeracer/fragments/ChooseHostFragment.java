@@ -10,12 +10,17 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.nearby.Nearby;
+import com.housing.typeracer.Constants;
 import com.housing.typeracer.MainActivity;
+import com.housing.typeracer.MainApplication;
 import com.housing.typeracer.R;
+import com.housing.typeracer.Serializer;
 import com.housing.typeracer.adapters.ChooseHostRecyclerAdapter;
 import com.housing.typeracer.listeners.RecyclerItemClickListener;
 import com.housing.typeracer.models.Host;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,6 +102,17 @@ public class ChooseHostFragment extends BaseFragment implements View.OnClickList
             case R.id.dismiss_ftr:
                 getFragmentController().onBackPressed();
                 break;
+        }
+    }
+
+    // TODO call this method
+    private void nudgeHost() {
+        try {
+            byte[] data = Serializer.serialize(Constants.NUDGE_HOST);
+            Nearby.Connections.sendReliableMessage(((MainActivity) getActivityReference()).mGoogleApiClient, ((MainActivity) getActivityReference()).mRemoteHostEndpoint, data);
+        } catch (IOException e) {
+            e.printStackTrace();
+            MainApplication.showToast(R.string.something_went_wrong);
         }
     }
 }
