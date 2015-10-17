@@ -2,16 +2,25 @@ package com.housing.typeracer;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.Layout;
 import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements TextWatcher {
 
@@ -19,26 +28,67 @@ public class MainActivity extends AppCompatActivity implements TextWatcher {
     EditText input;
     String text;
     int counterText = 0;
-    int counterInput = 0;
     int flag = 0;
     int mistake;
     SpannableString styledString;
+    private int progressStatus = 0;
+    private Handler handler = new Handler();
+    ScrollView scrollView;
+    ArrayList<Integer> list = new ArrayList<>();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        /*getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
         para = (TextView) findViewById(R.id.tvPara);
         input = (EditText) findViewById(R.id.etInput);
+        scrollView = (ScrollView) findViewById(R.id.scrollView);
         input.addTextChangedListener(this);
         text = para.getText().toString();
+        scrollView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+        para.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                para.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+
+                final Layout layout = para.getLayout();
+
+                // Loop over all the lines and do whatever you need with
+                // the width of the line
+                for (int i = 1; i < layout.getLineCount(); i++) {
+                    int end = layout.getLineEnd(i);
+                    list.add(i);
+                    Log.i("ankitscroll", String.valueOf(end));
+                    if (i == 0) {
+                        //   scrollView.scrollTo(0, para.getLineHeight());
+                    }
+                   /* SpannableString content = new SpannableString(para.getText().toString());
+                    content.setSpan(new StyleSpan(Typeface.BOLD), 0, end, 0);
+                    content.setSpan(new StyleSpan(Typeface.NORMAL), end, content.length(), 0);
+                   */ //      para.setText(content);
+                }
+            }
+        });
         styledString
                 = new SpannableString(text);
-        styledString.setSpan(new ForegroundColorSpan(Color.BLUE), beforeIndex(counterText), afterIndex(counterText), 0);
+        styledString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.blue)), beforeIndex(counterText), afterIndex(counterText), 0);
         para.setText(styledString);
 
+    }
 
+    private int dpToPx(int dp) {
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        return px;
     }
 
     @Override
@@ -98,21 +148,25 @@ public class MainActivity extends AppCompatActivity implements TextWatcher {
         Log.i("ankit_ON_before", String.valueOf(before));
         Log.i("ankit_ON_S", s.toString());
         Log.i("ankit_ON_counter", String.valueOf(counterText));
-
+//if(counterText )
         if (count > before) {
             if (flag == 0) {
                 if (counterText < text.length() - 1) {
                     if (!(Character.toString(text.charAt(counterText + start))).equals(Character.toString(s.charAt(start)))) {
-                        input.setBackgroundColor(Color.RED);
-                        flag = 1;
-                        mistake = start;
+                        if (!Character.toString(s.charAt(start)).equals(" ")) {
+                            input.setBackgroundColor(Color.RED);
+                            flag = 1;
+                            mistake = start;
+                        } else {
+                            input.setText((input.getText().toString()).replace(" ", ""));
+                        }
                     } else {
                         if ((Character.toString(s.charAt(start))).equals(" ")) {
                             input.setText("");
                             counterText = counterText + start + 1;
                             Log.i("ankit_ON_counter1", String.valueOf(counterText));
-                            styledString.setSpan(new ForegroundColorSpan(Color.BLACK), 0, text.length(), 0);
-                            styledString.setSpan(new ForegroundColorSpan(Color.BLUE), counterText, afterIndex(counterText), 0);
+                            styledString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.light_blue)), 0, text.length(), 0);
+                            styledString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.blue)), counterText, afterIndex(counterText), 0);
                             Log.i("ankit_ON_after", String.valueOf(afterIndex(counterText)));
                             para.setText(styledString);
                         }
