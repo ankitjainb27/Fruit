@@ -1,6 +1,7 @@
 package com.housing.typeracer;
 
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -49,6 +51,7 @@ public class GameFragment extends BaseFragment implements TextWatcher, View.OnCl
     int flag = 0;
     int mistake;
     SpannableString styledString;
+    LinearLayout ll;
     ScrollView scrollView;
     List<Integer> list = new ArrayList<>();
     ImageView[] IMGS;
@@ -62,7 +65,7 @@ public class GameFragment extends BaseFragment implements TextWatcher, View.OnCl
     private List<String> deviceRemoteIds;
     Map<String, Integer> map;
     Set<String> keys;
-    ProgressBar progressBar;
+    ProgressBar progressBar1, progressBar2, progressBar3, progressBar4, progressBar5;
 
     private boolean startCalled = false;
     private long startTime;
@@ -190,7 +193,20 @@ public class GameFragment extends BaseFragment implements TextWatcher, View.OnCl
         exit = (TextView) rootView.findViewById(R.id.exit);
         exit.setOnClickListener(this);
         ((MainActivity) getActivityReference()).hideToolbar();
-        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar2);
+        ll = (LinearLayout) rootView.findViewById(R.id.ll);
+        progressBar1 = (ProgressBar) rootView.findViewById(R.id.progressBar1);
+        progressBar1.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
+        progressBar2 = (ProgressBar) rootView.findViewById(R.id.progressBar2);
+        progressBar2.getProgressDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+        progressBar3 = (ProgressBar) rootView.findViewById(R.id.progressBar3);
+        progressBar3.getProgressDrawable().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_IN);
+        progressBar4 = (ProgressBar) rootView.findViewById(R.id.progressBar4);
+        progressBar4.getProgressDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
+        progressBar5 = (ProgressBar) rootView.findViewById(R.id.progressBar5);
+        progressBar5.getProgressDrawable().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_IN);
+        for (int i = 0; i < VALUES; i++) {
+            ll.getChildAt(i).setVisibility(View.VISIBLE);
+        }
         para = (TextView) rootView.findViewById(R.id.tvPara);
         input = (EditText) rootView.findViewById(R.id.etInput);
         scrollView = (ScrollView) rootView.findViewById(R.id.scrollView);
@@ -275,6 +291,7 @@ public class GameFragment extends BaseFragment implements TextWatcher, View.OnCl
 
 
     private void updateProgressBar() {
+
         map = getPlayersPosition();
         printMap1(map);
         boolean finished = checkIfFinished(map);
@@ -284,13 +301,22 @@ public class GameFragment extends BaseFragment implements TextWatcher, View.OnCl
         }
         int pos = new ArrayList<String>(keys).indexOf(myDeviceId);
         position.setText("Position " + pos + "/" + VALUES);
-
         printMap1(map);
         for (int i = 0; i < VALUES; i++) {
-            width = (width * map.get(new ArrayList<>(keys).get(i))) / text.length();
-            progressBar.setProgress(width);
-
+            width = (100 * map.get(new ArrayList<>(keys).get(i))) / text.length();
+            if (i == 0) {
+                progressBar1.setProgress(width);
+            } else if (i == 1) {
+                progressBar2.setProgress(width);
+            } else if (i == 2) {
+                progressBar3.setProgress(width);
+            } else if (i == 3) {
+                progressBar4.setProgress(width);
+            } else if (i == 4) {
+                progressBar5.setProgress(width);
+            }
         }
+    }
         /*
         for (String key : keys) {
             lp.width = (width * map.get(key)) / text.length();
@@ -313,7 +339,7 @@ public class GameFragment extends BaseFragment implements TextWatcher, View.OnCl
             }
            */
             /*}*/
-    }
+
 
       /*  for (int i = 0; i < VALUES; i++) {
       *//*  for (String key : keys) {
