@@ -28,6 +28,7 @@ import com.housing.typeracer.fragments.ChooseClientFragment;
 import com.housing.typeracer.fragments.ChooseHostFragment;
 import com.housing.typeracer.fragments.GetStartedFragment;
 import com.housing.typeracer.fragments.LaunchFragment;
+import com.housing.typeracer.fragments.LeaderboardFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -371,9 +372,14 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case OPEN_AVATAR_SCREEN:
                 replaceFragmentInDefaultLayout(AvatarFragment.newInstance());
+                break;
             case OPEN_GAME_FRAGMENT:
                 openGameScreen();
                 break;
+            case OPEN_LEADERBOARD:
+                replaceFragmentInDefaultLayout(LeaderboardFragment.newInstance());
+                break;
+
         }
     }
 

@@ -5,8 +5,8 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -22,7 +22,6 @@ import com.housing.typeracer.R;
  */
 public class LaunchFragment extends BaseFragment implements View.OnClickListener {
 
-    private RelativeLayout mainLayout;
     private RelativeLayout noWifiLayout;
     Button button;
 
@@ -35,7 +34,6 @@ public class LaunchFragment extends BaseFragment implements View.OnClickListener
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.launch_screen, container, false);
-        mainLayout = (RelativeLayout) rootView.findViewById(R.id.main_layout);
         noWifiLayout = (RelativeLayout) rootView.findViewById(R.id.no_wifi_layout);
         button = (Button) rootView.findViewById(R.id.button);
         rootView.findViewById(R.id.host_game_button).setOnClickListener(this);
