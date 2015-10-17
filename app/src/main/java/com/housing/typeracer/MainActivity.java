@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements
     private FragmentTransaction fragmentTransaction;
     private Toolbar toolbar;
     private int playersCount = 0;
-    private String myDeviceId;
+    public String myDeviceId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -223,6 +223,14 @@ public class MainActivity extends AppCompatActivity implements
                 }
             } catch (Exception p) {
 
+            }
+        } else if (!isReliable && MainApplication.mIsHost) {
+            try {
+                Object obj = Serializer.deserialize(payload);
+                if (obj instanceof Integer) {
+
+                }
+            } catch (Exception p) {
             }
         }
     }
