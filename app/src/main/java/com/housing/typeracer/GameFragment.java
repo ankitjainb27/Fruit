@@ -22,13 +22,17 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.nearby.Nearby;
 import com.housing.typeracer.fragments.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class GameFragment extends BaseFragment implements TextWatcher {
 
+    private String myDeviceId;
     TextView para;
     EditText input;
     String text;
@@ -41,6 +45,8 @@ public class GameFragment extends BaseFragment implements TextWatcher {
     ImageView[] IMGS;
     public static int VALUES;
     RelativeLayout progressImages;
+    private GoogleApiClient mGoogleApiClient;
+    private List<String> deviceRemoteIds;
 
 
     public static GameFragment newInstance() {
@@ -51,8 +57,37 @@ public class GameFragment extends BaseFragment implements TextWatcher {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        myDeviceId = ((MainActivity) getActivityReference()).myDeviceId;
+        mGoogleApiClient = ((MainActivity) getActivityReference()).mGoogleApiClient;
+        deviceRemoteIds = new ArrayList<>();
+        for (String key : MainApplication.USER_REMOTE_ENDPOINT.keySet()) {
+            if (!key.equalsIgnoreCase(myDeviceId)) {
+                deviceRemoteIds.add(MainApplication.USER_REMOTE_ENDPOINT.get(key));
+            }
+        }
     }
 
+    private void pushMyPosition(int pos) {
+        if (!MainApplication.mIsHost) {
+            try {
+                byte[] data = Serializer.serialize(pos);
+                Nearby.Connections.sendUnreliableMessage(mGoogleApiClient, ((MainActivity) getActivityReference()).mRemoteHostEndpoint, data);
+            } catch (Exception p) {
+                p.printStackTrace();
+            }
+        } else {
+            MainApplication.USER_SCORE.put(myDeviceId, pos);
+            try {
+                byte[] data = Serializer.serialize(MainApplication.USER_SCORE);
+                Nearby.Connections.sendUnreliableMessage(mGoogleApiClient, deviceRemoteIds, data);
+            } catch (Exception p) {
+            }
+        }
+    }
+
+    private Map<String, Integer> getPlayersPosition() {
+        return MainApplication.USER_SCORE;
+    }
 
     @Nullable
     @Override
